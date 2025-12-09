@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight, Wrench, Code, Trophy, Users, Rocket, Target } from "lucide-react";
@@ -10,7 +11,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { BentoGrid, BentoItem } from "@/components/features/bento-grid";
 import { LessonCard } from "@/components/features/lesson-card";
-import { getPopularLessons, getActiveAnnouncements } from "@/lib/data";
+import { getPopularLessons, getActiveAnnouncements } from "@/lib/supabase-data";
+import { Lesson, Announcement } from "@/types";
 
 const features = [
   {
@@ -46,8 +48,22 @@ const features = [
 ];
 
 export default function HomePage() {
-  const popularLessons = getPopularLessons(3);
-  const announcements = getActiveAnnouncements();
+  const [popularLessons, setPopularLessons] = useState<Lesson[]>([]);
+  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchData() {
+      const [lessons, announcementsData] = await Promise.all([
+        getPopularLessons(3),
+        getActiveAnnouncements(),
+      ]);
+      setPopularLessons(lessons);
+      setAnnouncements(announcementsData);
+      setLoading(false);
+    }
+    fetchData();
+  }, []);
 
   return (
     <>
@@ -96,7 +112,7 @@ export default function HomePage() {
       </section>
 
       {/* Announcements */}
-      {announcements.length > 0 && (
+      {!loading && announcements.length > 0 && (
         <Section className="py-12 bg-muted/30">
           <Container>
             <div className="grid gap-4 md:grid-cols-3">
@@ -151,19 +167,25 @@ export default function HomePage() {
           title="Популярные уроки"
           description="Начните изучение с самых востребованных материалов"
         />
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {popularLessons.map((lesson, index) => (
-            <LessonCard key={lesson.id} lesson={lesson} index={index} />
-          ))}
-        </div>
-        <div className="mt-12 text-center">
-          <Button asChild variant="outline" size="lg">
-            <Link href="/lessons">
-              Все уроки
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-          </Button>
-        </div>
+        {loading ? (
+          <div className="text-center text-muted-foreground">Загрузка...</div>
+        ) : (
+          <>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {popularLessons.map((lesson, index) => (
+                <LessonCard key={lesson.id} lesson={lesson} index={index} />
+              ))}
+            </div>
+            <div className="mt-12 text-center">
+              <Button asChild variant="outline" size="lg">
+                <Link href="/lessons">
+                  Все уроки
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
+            </div>
+          </>
+        )}
       </Section>
 
       {/* CTA */}
