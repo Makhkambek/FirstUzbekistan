@@ -1,14 +1,18 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Calendar, Users, CheckCircle, ExternalLink, Clock, Mail, Send } from "lucide-react";
+import { Calendar, Users, CheckCircle, ExternalLink, Mail, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { siteSettings } from "@/lib/data";
+import { getSiteSettings } from "@/lib/supabase-data";
 import { formatDate, isPast } from "@/lib/utils";
+import type { Database } from "@/types/database";
+
+type SiteSettings = Database['public']['Tables']['site_settings']['Row'];
 
 const requirements = [
     "Возраст от 14 до 18 лет",
@@ -42,10 +46,35 @@ const process = [
 ];
 
 export default function ApplyPage() {
-    const isDeadlinePassed = siteSettings.application_deadline
-        ? isPast(siteSettings.application_deadline)
+    const [settings, setSettings] = useState<SiteSettings | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchData() {
+            const settingsData = await getSiteSettings();
+            console.log('Apply page - fetched settings:', settingsData);
+            setSettings(settingsData);
+            setLoading(false);
+        }
+        fetchData();
+    }, []);
+
+    if (loading) {
+        return (
+            <Section>
+                <Container>
+                    <div className="text-center text-muted-foreground">Загрузка...</div>
+                </Container>
+            </Section>
+        );
+    }
+
+    const isDeadlinePassed = settings?.application_deadline
+        ? isPast(settings.application_deadline)
         : false;
-    const isOpen = siteSettings.application_open && !isDeadlinePassed;
+    const isOpen = settings?.application_open && !isDeadlinePassed;
+
+    console.log('Apply page - isOpen:', isOpen, 'application_open:', settings?.application_open, 'isDeadlinePassed:', isDeadlinePassed);
 
     return (
         <>
@@ -91,23 +120,23 @@ export default function ApplyPage() {
                                             <div className={`h-3 w-3 rounded-full ${isOpen ? "bg-green-500" : "bg-red-500"}`} />
                                             <span>{isOpen ? "Приём заявок открыт" : "Приём заявок закрыт"}</span>
                                         </div>
-                                        {siteSettings.application_deadline && (
+                                        {settings && settings.application_deadline && (
                                             <div className="flex items-center gap-3 text-muted-foreground">
                                                 <Calendar className="h-5 w-5" />
-                                                <span>Дедлайн: {formatDate(siteSettings.application_deadline)}</span>
+                                                <span>Дедлайн: {formatDate(settings.application_deadline)}</span>
                                             </div>
                                         )}
-                                        {siteSettings.spots_remaining !== null && (
+                                        {settings && typeof settings.spots_remaining === 'number' && (
                                             <div className="flex items-center gap-3 text-muted-foreground">
                                                 <Users className="h-5 w-5" />
-                                                <span>Осталось мест: {siteSettings.spots_remaining}</span>
+                                                <span>Осталось мест: {settings.spots_remaining}</span>
                                             </div>
                                         )}
                                     </div>
-                                    {isOpen ? (
+                                    {isOpen && settings && settings.application_form_url ? (
                                         <Button asChild className="w-full mt-6" size="lg">
                                             <a
-                                                href={siteSettings.application_form_url}
+                                                href={settings.application_form_url}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                             >

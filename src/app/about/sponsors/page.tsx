@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowLeft, Heart, Mail } from "lucide-react";
@@ -8,10 +9,23 @@ import { Section, SectionHeader } from "@/components/ui/section";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SponsorCard } from "@/components/features/sponsor-card";
-import { getActiveSponsors } from "@/lib/data";
+import { getActiveSponsors } from "@/lib/supabase-data";
+import type { Database } from "@/types/database";
+
+type Sponsor = Database['public']['Tables']['sponsors']['Row'];
 
 export default function SponsorsPage() {
-    const sponsors = getActiveSponsors();
+    const [sponsors, setSponsors] = useState<Sponsor[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchData() {
+            const sponsorsData = await getActiveSponsors();
+            setSponsors(sponsorsData);
+            setLoading(false);
+        }
+        fetchData();
+    }, []);
 
     // Group by tier
     const sponsorsByTier = {
@@ -53,52 +67,66 @@ export default function SponsorsPage() {
                 </Container>
             </Section>
 
-            {/* Platinum */}
-            {sponsorsByTier.platinum.length > 0 && (
+            {loading ? (
                 <Section>
-                    <SectionHeader title="Платиновые спонсоры" centered={false} />
-                    <div className="grid gap-6 md:grid-cols-2">
-                        {sponsorsByTier.platinum.map((sponsor, index) => (
-                            <SponsorCard key={sponsor.id} sponsor={sponsor} index={index} />
-                        ))}
-                    </div>
+                    <div className="text-center text-muted-foreground">Загрузка...</div>
                 </Section>
-            )}
-
-            {/* Gold */}
-            {sponsorsByTier.gold.length > 0 && (
-                <Section className={sponsorsByTier.platinum.length > 0 ? "bg-muted/30" : ""}>
-                    <SectionHeader title="Золотые спонсоры" centered={false} />
-                    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                        {sponsorsByTier.gold.map((sponsor, index) => (
-                            <SponsorCard key={sponsor.id} sponsor={sponsor} index={index} />
-                        ))}
-                    </div>
-                </Section>
-            )}
-
-            {/* Silver */}
-            {sponsorsByTier.silver.length > 0 && (
+            ) : sponsors.length === 0 ? (
                 <Section>
-                    <SectionHeader title="Серебряные спонсоры" centered={false} />
-                    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                        {sponsorsByTier.silver.map((sponsor, index) => (
-                            <SponsorCard key={sponsor.id} sponsor={sponsor} index={index} />
-                        ))}
+                    <div className="text-center text-muted-foreground">
+                        Информация о спонсорах скоро появится...
                     </div>
                 </Section>
-            )}
+            ) : (
+                <>
+                    {/* Platinum */}
+                    {sponsorsByTier.platinum.length > 0 && (
+                        <Section>
+                            <SectionHeader title="Платиновые спонсоры" centered={false} />
+                            <div className="grid gap-6 md:grid-cols-2">
+                                {sponsorsByTier.platinum.map((sponsor, index) => (
+                                    <SponsorCard key={sponsor.id} sponsor={sponsor} index={index} />
+                                ))}
+                            </div>
+                        </Section>
+                    )}
 
-            {/* Bronze & Partners */}
-            {(sponsorsByTier.bronze.length > 0 || sponsorsByTier.partner.length > 0) && (
-                <Section className="bg-muted/30">
-                    <SectionHeader title="Партнёры" centered={false} />
-                    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                        {[...sponsorsByTier.bronze, ...sponsorsByTier.partner].map((sponsor, index) => (
-                            <SponsorCard key={sponsor.id} sponsor={sponsor} index={index} />
-                        ))}
-                    </div>
-                </Section>
+                    {/* Gold */}
+                    {sponsorsByTier.gold.length > 0 && (
+                        <Section className={sponsorsByTier.platinum.length > 0 ? "bg-muted/30" : ""}>
+                            <SectionHeader title="Золотые спонсоры" centered={false} />
+                            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                                {sponsorsByTier.gold.map((sponsor, index) => (
+                                    <SponsorCard key={sponsor.id} sponsor={sponsor} index={index} />
+                                ))}
+                            </div>
+                        </Section>
+                    )}
+
+                    {/* Silver */}
+                    {sponsorsByTier.silver.length > 0 && (
+                        <Section>
+                            <SectionHeader title="Серебряные спонсоры" centered={false} />
+                            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                                {sponsorsByTier.silver.map((sponsor, index) => (
+                                    <SponsorCard key={sponsor.id} sponsor={sponsor} index={index} />
+                                ))}
+                            </div>
+                        </Section>
+                    )}
+
+                    {/* Bronze & Partners */}
+                    {(sponsorsByTier.bronze.length > 0 || sponsorsByTier.partner.length > 0) && (
+                        <Section className="bg-muted/30">
+                            <SectionHeader title="Партнёры" centered={false} />
+                            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                                {[...sponsorsByTier.bronze, ...sponsorsByTier.partner].map((sponsor, index) => (
+                                    <SponsorCard key={sponsor.id} sponsor={sponsor} index={index} />
+                                ))}
+                            </div>
+                        </Section>
+                    )}
+                </>
             )}
 
             {/* Become a sponsor */}

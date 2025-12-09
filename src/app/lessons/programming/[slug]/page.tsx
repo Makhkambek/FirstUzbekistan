@@ -1,6 +1,6 @@
 "use client";
 
-import { use } from "react";
+import { use, useEffect, useState } from "react";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -10,12 +10,11 @@ import { Section } from "@/components/ui/section";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-    getLessonBySlug,
-    getLessonsBySubcategory,
-    lessons
-} from "@/lib/data";
+import { getLessonBySlug, getLessonsBySubcategory } from "@/lib/supabase-data";
 import { formatNumber, formatDate, getDifficultyLabel, getYouTubeId } from "@/lib/utils";
+import type { Database } from "@/types/database";
+
+type Lesson = Database['public']['Tables']['lessons']['Row'];
 
 interface PageProps {
     params: Promise<{ slug: string }>;
@@ -23,15 +22,39 @@ interface PageProps {
 
 export default function ProgrammingLessonPage({ params }: PageProps) {
     const { slug } = use(params);
-    const lesson = getLessonBySlug(slug);
+    const [lesson, setLesson] = useState<Lesson | null>(null);
+    const [relatedLessons, setRelatedLessons] = useState<Lesson[]>([]);
+    const [loading, setLoading] = useState(true);
 
-    if (!lesson || lesson.category !== "programming") {
-        notFound();
+    useEffect(() => {
+        async function fetchData() {
+            const lessonData = await getLessonBySlug(slug);
+
+            if (!lessonData || lessonData.category !== "programming") {
+                notFound();
+            }
+
+            setLesson(lessonData);
+
+            // Get related lessons
+            const related = await getLessonsBySubcategory(lessonData.subcategory_id);
+            setRelatedLessons(related.filter(l => l.id !== lessonData.id).slice(0, 3));
+            setLoading(false);
+        }
+        fetchData();
+    }, [slug]);
+
+    if (loading) {
+        return (
+            <Section>
+                <div className="text-center text-muted-foreground">Загрузка...</div>
+            </Section>
+        );
     }
 
-    const relatedLessons = getLessonsBySubcategory(lesson.subcategory_id)
-        .filter(l => l.id !== lesson.id)
-        .slice(0, 3);
+    if (!lesson) {
+        notFound();
+    }
 
     const videoId = getYouTubeId(lesson.video_url);
 

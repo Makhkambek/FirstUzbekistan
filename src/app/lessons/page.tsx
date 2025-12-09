@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Wrench, Code, ArrowRight, BookOpen } from "lucide-react";
@@ -7,13 +8,16 @@ import { Container } from "@/components/ui/container";
 import { Section, SectionHeader } from "@/components/ui/section";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { LessonCard } from "@/components/features/lesson-card";
-import { getSubcategoriesByCategory, getPopularLessons } from "@/lib/data";
+import { getPopularLessons, getSubcategoriesByCategory } from "@/lib/supabase-data";
+import type { Database } from "@/types/database";
+
+type Lesson = Database['public']['Tables']['lessons']['Row'];
+type Subcategory = Database['public']['Tables']['subcategories']['Row'];
 
 const categories = [
     {
-        id: "engineering",
+        id: "engineering" as const,
         title: "Инженерия",
         description: "CAD моделирование, механика, прототипирование и конструирование роботов",
         icon: Wrench,
@@ -22,7 +26,7 @@ const categories = [
         gradient: "from-engineering-500 to-engineering-600",
     },
     {
-        id: "programming",
+        id: "programming" as const,
         title: "Программирование",
         description: "FTC SDK, TeleOp управление, автономные системы и датчики",
         icon: Code,
@@ -33,7 +37,27 @@ const categories = [
 ];
 
 export default function LessonsPage() {
-    const popularLessons = getPopularLessons(6);
+    const [popularLessons, setPopularLessons] = useState<Lesson[]>([]);
+    const [subcategories, setSubcategories] = useState<Record<string, Subcategory[]>>({});
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchData() {
+            const [lessons, engineeringSubcats, programmingSubcats] = await Promise.all([
+                getPopularLessons(6),
+                getSubcategoriesByCategory('engineering'),
+                getSubcategoriesByCategory('programming'),
+            ]);
+
+            setPopularLessons(lessons);
+            setSubcategories({
+                engineering: engineeringSubcats,
+                programming: programmingSubcats,
+            });
+            setLoading(false);
+        }
+        fetchData();
+    }, []);
 
     return (
         <>
@@ -63,61 +87,65 @@ export default function LessonsPage() {
             {/* Categories */}
             <Section>
                 <SectionHeader title="Направления обучения" />
-                <div className="grid gap-6 md:grid-cols-2">
-                    {categories.map((category, index) => {
-                        const subcategories = getSubcategoriesByCategory(category.id as "engineering" | "programming");
+                {loading ? (
+                    <div className="text-center text-muted-foreground">Загрузка...</div>
+                ) : (
+                    <div className="grid gap-6 md:grid-cols-2">
+                        {categories.map((category, index) => {
+                            const categorySubcats = subcategories[category.id] || [];
 
-                        return (
-                            <motion.div
-                                key={category.id}
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: index * 0.1 }}
-                            >
-                                <Link href={category.href}>
-                                    <Card className="group h-full hover:shadow-lg transition-all duration-300 overflow-hidden">
-                                        {/* Header with gradient */}
-                                        <div className={`bg-gradient-to-r ${category.gradient} p-6 text-white`}>
-                                            <div className="flex items-center gap-4">
-                                                <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-white/20">
-                                                    <category.icon className="h-7 w-7" />
-                                                </div>
-                                                <div>
-                                                    <h3 className="text-xl font-semibold">{category.title}</h3>
-                                                    <p className="text-white/80 text-sm mt-1">
-                                                        {subcategories.length} подраздела
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <CardContent className="p-6">
-                                            <p className="text-muted-foreground mb-4">
-                                                {category.description}
-                                            </p>
-
-                                            {/* Subcategories */}
-                                            <div className="space-y-2 mb-4">
-                                                {subcategories.map((sub) => (
-                                                    <div key={sub.id} className="flex items-center gap-2 text-sm">
-                                                        <div className={`h-1.5 w-1.5 rounded-full bg-${category.color}-500`} />
-                                                        {sub.title}
+                            return (
+                                <motion.div
+                                    key={category.id}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ delay: index * 0.1 }}
+                                >
+                                    <Link href={category.href}>
+                                        <Card className="group h-full hover:shadow-lg transition-all duration-300 overflow-hidden">
+                                            {/* Header with gradient */}
+                                            <div className={`bg-gradient-to-r ${category.gradient} p-6 text-white`}>
+                                                <div className="flex items-center gap-4">
+                                                    <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-white/20">
+                                                        <category.icon className="h-7 w-7" />
                                                     </div>
-                                                ))}
+                                                    <div>
+                                                        <h3 className="text-xl font-semibold">{category.title}</h3>
+                                                        <p className="text-white/80 text-sm mt-1">
+                                                            {categorySubcats.length} подраздела
+                                                        </p>
+                                                    </div>
+                                                </div>
                                             </div>
 
-                                            <div className={`flex items-center text-sm font-medium text-${category.color}-500`}>
-                                                Смотреть уроки
-                                                <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                                            </div>
-                                        </CardContent>
-                                    </Card>
-                                </Link>
-                            </motion.div>
-                        );
-                    })}
-                </div>
+                                            <CardContent className="p-6">
+                                                <p className="text-muted-foreground mb-4">
+                                                    {category.description}
+                                                </p>
+
+                                                {/* Subcategories */}
+                                                <div className="space-y-2 mb-4">
+                                                    {categorySubcats.map((sub) => (
+                                                        <div key={sub.id} className="flex items-center gap-2 text-sm">
+                                                            <div className={`h-1.5 w-1.5 rounded-full bg-${category.color}-500`} />
+                                                            {sub.title}
+                                                        </div>
+                                                    ))}
+                                                </div>
+
+                                                <div className={`flex items-center text-sm font-medium text-${category.color}-500`}>
+                                                    Смотреть уроки
+                                                    <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                                                </div>
+                                            </CardContent>
+                                        </Card>
+                                    </Link>
+                                </motion.div>
+                            );
+                        })}
+                    </div>
+                )}
             </Section>
 
             {/* Popular Lessons */}
@@ -126,11 +154,15 @@ export default function LessonsPage() {
                     title="Популярные уроки"
                     description="Самые просматриваемые материалы"
                 />
-                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                    {popularLessons.map((lesson, index) => (
-                        <LessonCard key={lesson.id} lesson={lesson} index={index} />
-                    ))}
-                </div>
+                {loading ? (
+                    <div className="text-center text-muted-foreground">Загрузка...</div>
+                ) : (
+                    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                        {popularLessons.map((lesson, index) => (
+                            <LessonCard key={lesson.id} lesson={lesson} index={index} />
+                        ))}
+                    </div>
+                )}
             </Section>
         </>
     );

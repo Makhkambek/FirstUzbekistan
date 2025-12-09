@@ -1,18 +1,41 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowLeft, Wrench, ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ArrowLeft, Wrench } from "lucide-react";
 import { Container } from "@/components/ui/container";
-import { Section, SectionHeader } from "@/components/ui/section";
+import { Section } from "@/components/ui/section";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { LessonCard } from "@/components/features/lesson-card";
-import { getSubcategoriesByCategory, getLessonsBySubcategory } from "@/lib/data";
+import { getSubcategoriesByCategory, getLessonsBySubcategory } from "@/lib/supabase-data";
+import type { Database } from "@/types/database";
+
+type Subcategory = Database['public']['Tables']['subcategories']['Row'];
+type Lesson = Database['public']['Tables']['lessons']['Row'];
 
 export default function EngineeringPage() {
-    const subcategories = getSubcategoriesByCategory("engineering");
+    const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
+    const [lessonsBySubcategory, setLessonsBySubcategory] = useState<Record<string, Lesson[]>>({});
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchData() {
+            const subcats = await getSubcategoriesByCategory('engineering');
+            setSubcategories(subcats);
+
+            // Fetch lessons for each subcategory
+            const lessonsData: Record<string, Lesson[]> = {};
+            for (const subcat of subcats) {
+                const lessons = await getLessonsBySubcategory(subcat.id);
+                lessonsData[subcat.id] = lessons;
+            }
+            setLessonsBySubcategory(lessonsData);
+            setLoading(false);
+        }
+        fetchData();
+    }, []);
 
     return (
         <>
@@ -48,43 +71,49 @@ export default function EngineeringPage() {
             </Section>
 
             {/* Subcategories */}
-            {subcategories.map((subcategory, subIndex) => {
-                const lessons = getLessonsBySubcategory(subcategory.id);
+            {loading ? (
+                <Section>
+                    <div className="text-center text-muted-foreground">Загрузка...</div>
+                </Section>
+            ) : (
+                subcategories.map((subcategory, subIndex) => {
+                    const lessons = lessonsBySubcategory[subcategory.id] || [];
 
-                return (
-                    <Section key={subcategory.id} className={subIndex % 2 === 1 ? "bg-muted/30" : ""}>
-                        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between mb-8">
-                            <div>
-                                <Badge variant="engineering" className="mb-2">
-                                    Раздел {subIndex + 1}
-                                </Badge>
-                                <h2 className="text-2xl font-bold sm:text-3xl">
-                                    {subcategory.title}
-                                </h2>
-                                <p className="mt-2 text-muted-foreground max-w-2xl">
-                                    {subcategory.description}
-                                </p>
-                            </div>
-                        </div>
-
-                        {lessons.length > 0 ? (
-                            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                                {lessons.map((lesson, index) => (
-                                    <LessonCard key={lesson.id} lesson={lesson} index={index} />
-                                ))}
-                            </div>
-                        ) : (
-                            <Card>
-                                <CardContent className="py-12 text-center">
-                                    <p className="text-muted-foreground">
-                                        Уроки скоро появятся...
+                    return (
+                        <Section key={subcategory.id} className={subIndex % 2 === 1 ? "bg-muted/30" : ""}>
+                            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between mb-8">
+                                <div>
+                                    <Badge variant="engineering" className="mb-2">
+                                        Раздел {subIndex + 1}
+                                    </Badge>
+                                    <h2 className="text-2xl font-bold sm:text-3xl">
+                                        {subcategory.title}
+                                    </h2>
+                                    <p className="mt-2 text-muted-foreground max-w-2xl">
+                                        {subcategory.description}
                                     </p>
-                                </CardContent>
-                            </Card>
-                        )}
-                    </Section>
-                );
-            })}
+                                </div>
+                            </div>
+
+                            {lessons.length > 0 ? (
+                                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                                    {lessons.map((lesson, index) => (
+                                        <LessonCard key={lesson.id} lesson={lesson} index={index} />
+                                    ))}
+                                </div>
+                            ) : (
+                                <Card>
+                                    <CardContent className="py-12 text-center">
+                                        <p className="text-muted-foreground">
+                                            Уроки скоро появятся...
+                                        </p>
+                                    </CardContent>
+                                </Card>
+                            )}
+                        </Section>
+                    );
+                })
+            )}
         </>
     );
 }

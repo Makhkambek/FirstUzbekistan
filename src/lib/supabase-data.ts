@@ -78,35 +78,31 @@ export async function getLessonsBySubcategory(subcategoryId: string): Promise<Le
 }
 
 export async function getLessonBySlug(slug: string): Promise<Lesson | null> {
+    console.log('Fetching lesson with slug:', slug);
+
     const { data, error } = await supabase
         .from('lessons')
         .select('*')
         .eq('slug', slug)
-        .eq('status', 'published')
-        .single()
+        .maybeSingle()
 
     if (error) {
         console.error('Error fetching lesson:', error)
         return null
     }
 
-    // Increment views (fire and forget)
-    if (data) {
-        (async () => {
-            try {
-                const { error } = await supabase
-                    .from('lessons')
-                    .update({ views: data.views + 1 })
-                    .eq('id', data.id)
-
-                if (error) {
-                    console.error('Error updating views:', error)
-                }
-            } catch (err) {
-                console.error('Error updating views:', err)
-            }
-        })()
+    if (!data) {
+        console.log('Lesson not found with slug:', slug)
+        return null
     }
+
+    console.log('Lesson found:', data.title);
+
+    // Increment views (без await - просто запускаем и забываем)
+    void supabase
+        .from('lessons')
+        .update({ views: data.views + 1 })
+        .eq('id', data.id)
 
     return data
 }

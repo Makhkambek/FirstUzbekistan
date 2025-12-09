@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowLeft, Users as UsersIcon } from "lucide-react";
@@ -7,10 +8,23 @@ import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
 import { Badge } from "@/components/ui/badge";
 import { TeamMemberCard } from "@/components/features/team-member-card";
-import { getActiveTeamMembers } from "@/lib/data";
+import { getActiveTeamMembers } from "@/lib/supabase-data";
+import type { Database } from "@/types/database";
+
+type TeamMember = Database['public']['Tables']['team_members']['Row'];
 
 export default function TeamPage() {
-    const teamMembers = getActiveTeamMembers();
+    const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchData() {
+            const members = await getActiveTeamMembers();
+            setTeamMembers(members);
+            setLoading(false);
+        }
+        fetchData();
+    }, []);
 
     return (
         <>
@@ -44,11 +58,19 @@ export default function TeamPage() {
             </Section>
 
             <Section>
-                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                    {teamMembers.map((member, index) => (
-                        <TeamMemberCard key={member.id} member={member} index={index} />
-                    ))}
-                </div>
+                {loading ? (
+                    <div className="text-center text-muted-foreground">Загрузка...</div>
+                ) : teamMembers.length > 0 ? (
+                    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                        {teamMembers.map((member, index) => (
+                            <TeamMemberCard key={member.id} member={member} index={index} />
+                        ))}
+                    </div>
+                ) : (
+                    <div className="text-center text-muted-foreground">
+                        Информация о команде скоро появится...
+                    </div>
+                )}
             </Section>
 
             {/* Join CTA */}
