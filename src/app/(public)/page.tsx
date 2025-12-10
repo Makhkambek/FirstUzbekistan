@@ -82,9 +82,6 @@ export default function HomePage() {
             transition={{ duration: 0.6 }}
             className="mx-auto max-w-4xl text-center"
           >
-            <Badge className="mb-6 text-sm px-4 py-1">
-              🚀 Набор в команду открыт
-            </Badge>
 
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
               <span className="text-gradient-ftc">FIRST</span> Uzbekistan

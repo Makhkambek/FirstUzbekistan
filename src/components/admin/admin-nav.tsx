@@ -37,7 +37,7 @@ export function AdminNav() {
 
     const handleLogout = () => {
         Cookies.remove("admin-authenticated");
-        router.push("/admin/login");
+        router.push("/auth/login"); // Изменено с /admin/login
     };
 
     return (

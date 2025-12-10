@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
+import { TopLogos } from "@/components/layout/top-logos";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { LenisScroll } from "@/components/lenis-scroll";
 import "./globals.css";
 
 const inter = Inter({
@@ -23,17 +25,14 @@ export default function RootLayout({
   return (
     <html lang="ru" suppressHydrationWarning>
       <body className={`${inter.variable} font-sans antialiased`}>
+        <LenisScroll />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
-          <div className="relative flex min-h-screen flex-col">
-            <Header />
-            <main className="flex-1">{children}</main>
-            <Footer />
-          </div>
+          {children}
         </ThemeProvider>
       </body>
     </html>

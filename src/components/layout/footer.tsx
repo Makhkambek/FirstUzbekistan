@@ -106,9 +106,6 @@ export function Footer() {
                         <p className="text-sm text-muted-foreground">
                             © {new Date().getFullYear()} FIRST Uzbekistan. Все права защищены.
                         </p>
-                        <p className="text-sm text-muted-foreground">
-                            Сделано с ❤️ командой Antigravity AI
-                        </p>
                     </div>
                 </div>
             </Container>

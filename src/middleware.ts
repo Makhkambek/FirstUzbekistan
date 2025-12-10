@@ -4,17 +4,18 @@ import type { NextRequest } from 'next/server'
 export function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl
 
-    // Если это страница логина или API, пропускаем
-    if (pathname === '/admin/login' || pathname.startsWith('/api/')) {
+    // Пропускаем API и страницу логина
+    if (pathname.startsWith('/api/') || pathname === '/auth/login') {
         return NextResponse.next()
     }
 
-    // Проверяем только админские страницы
+    // Проверяем все админские страницы
     if (pathname.startsWith('/admin')) {
         const isAuthenticated = request.cookies.get('admin-authenticated')?.value === 'true'
 
         if (!isAuthenticated) {
-            return NextResponse.redirect(new URL('/admin/login', request.url))
+            // Редирект на НОВЫЙ путь логина
+            return NextResponse.redirect(new URL('/auth/login', request.url))
         }
     }
 
@@ -22,5 +23,7 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-    matcher: '/admin/:path*',
+    matcher: [
+        '/admin/:path*',
+    ],
 }

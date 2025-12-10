@@ -10,6 +10,15 @@ type Announcement = Database['public']['Tables']['announcements']['Row'];
 
 const supabase = createClient();
 
+export const dynamic = 'force-dynamic';
+
+const typeLabels: Record<string, string> = {
+    info: "Инфо",
+    warning: "Внимание",
+    success: "Успех",
+    event: "Событие",
+};
+
 export default function AdminAnnouncementsPage() {
     const [announcements, setAnnouncements] = useState<Announcement[]>([]);
     const [loading, setLoading] = useState(true);
@@ -22,7 +31,7 @@ export default function AdminAnnouncementsPage() {
         const { data } = await supabase
             .from("announcements")
             .select("*")
-            .order("order", { ascending: true });
+            .order("order");
         setAnnouncements(data || []);
         setLoading(false);
     }
@@ -42,13 +51,6 @@ export default function AdminAnnouncementsPage() {
         }
     }
 
-    const typeLabels: Record<string, string> = {
-        info: "Информация",
-        warning: "Важно",
-        success: "Успех",
-        event: "Событие",
-    };
-
     const columns = [
         {
             key: "title",
@@ -64,21 +66,17 @@ export default function AdminAnnouncementsPage() {
             key: "type",
             label: "Тип",
             render: (item: Announcement) => (
-                <Badge variant="outline">{typeLabels[item.type] || item.type}</Badge>
+                <Badge variant="outline">{typeLabels[item.type]}</Badge>
             ),
         },
         {
             key: "is_active",
             label: "Статус",
             render: (item: Announcement) => (
-                <Badge variant={item.is_active ? "success" : "secondary"}>
+                <Badge variant={item.is_active ? "default" : "secondary"}>
                     {item.is_active ? "Активно" : "Скрыто"}
                 </Badge>
             ),
-        },
-        {
-            key: "order",
-            label: "Порядок",
         },
     ];
 
@@ -96,6 +94,7 @@ export default function AdminAnnouncementsPage() {
                 data={announcements}
                 columns={columns}
                 onDelete={handleDelete}
+                editHref={(announcement) => `/admin/announcements/${announcement.id}/edit`}
                 newHref="/admin/announcements/new"
                 loading={loading}
                 emptyMessage="Нет объявлений"

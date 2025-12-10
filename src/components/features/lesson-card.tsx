@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { Clock, Eye, TrendingUp } from "lucide-react";
+import { Clock, Eye, Play } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import type { Database } from "@/types/database";
@@ -41,14 +41,22 @@ export function LessonCard({ lesson, index = 0 }: LessonCardProps) {
                     {/* Thumbnail */}
                     <div className="relative aspect-video overflow-hidden bg-muted">
                         {lesson.thumbnail_url ? (
-                            <img
-                                src={lesson.thumbnail_url}
-                                alt={lesson.title}
-                                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                            />
+                            <>
+                                <img
+                                    src={lesson.thumbnail_url}
+                                    alt={lesson.title}
+                                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                />
+                                {/* Play overlay */}
+                                <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <div className="bg-ftc-red rounded-full p-4">
+                                        <Play className="h-8 w-8 text-white fill-white" />
+                                    </div>
+                                </div>
+                            </>
                         ) : (
-                            <div className="flex h-full items-center justify-center">
-                                <TrendingUp className="h-12 w-12 text-muted-foreground" />
+                            <div className="flex h-full items-center justify-center bg-gradient-to-br from-muted to-muted/50">
+                                <Play className="h-12 w-12 text-muted-foreground" />
                             </div>
                         )}
                         <div className="absolute top-3 right-3">
