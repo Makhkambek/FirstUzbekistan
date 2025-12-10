@@ -246,6 +246,54 @@ export interface Database {
                 }
                 Relationships: []
             }
+            resources: {
+                Row: {
+                    id: string
+                    title: string
+                    description: string
+                    category: 'cad' | 'code' | 'drawing' | 'other'
+                    type: 'engineering' | 'programming'
+                    year: number
+                    file_url: string
+                    preview_url: string | null
+                    tags: string[]
+                    order: number
+                    is_active: boolean
+                    created_at: string
+                    updated_at: string
+                }
+                Insert: {
+                    id?: string
+                    title: string
+                    description: string
+                    category: 'cad' | 'code' | 'drawing' | 'other'
+                    type: 'engineering' | 'programming'
+                    year: number
+                    file_url: string
+                    preview_url?: string | null
+                    tags?: string[]
+                    order?: number
+                    is_active?: boolean
+                    created_at?: string
+                    updated_at?: string
+                }
+                Update: {
+                    id?: string
+                    title?: string
+                    description?: string
+                    category?: 'cad' | 'code' | 'drawing' | 'other'
+                    type?: 'engineering' | 'programming'
+                    year?: number
+                    file_url?: string
+                    preview_url?: string | null
+                    tags?: string[]
+                    order?: number
+                    is_active?: boolean
+                    created_at?: string
+                    updated_at?: string
+                }
+                Relationships: []
+            }
         }
         Views: {
             [_ in never]: never
@@ -261,3 +309,4 @@ export interface Database {
         }
     }
 }
+

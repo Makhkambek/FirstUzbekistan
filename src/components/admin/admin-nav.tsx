@@ -11,7 +11,8 @@ import {
     Settings,
     LogOut,
     Menu,
-    X
+    X,
+    FolderOpen  // ← добавьте
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -23,6 +24,7 @@ const navigation = [
     { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
     { name: "Уроки", href: "/admin/lessons", icon: Video },
     { name: "Объявления", href: "/admin/announcements", icon: Bell },
+    { name: "Ресурсы", href: "/admin/resources", icon: FolderOpen },
     { name: "Команда", href: "/admin/team", icon: Users },
     { name: "Спонсоры", href: "/admin/sponsors", icon: Heart },
     { name: "Настройки", href: "/admin/settings", icon: Settings },

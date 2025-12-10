@@ -4,14 +4,17 @@ import type { NextRequest } from 'next/server'
 export function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl
 
-    // Защищаем все /admin роуты кроме /admin/login
-    if (pathname.startsWith('/admin') && pathname !== '/admin/login') {
+    // Если это страница логина или API, пропускаем
+    if (pathname === '/admin/login' || pathname.startsWith('/api/')) {
+        return NextResponse.next()
+    }
+
+    // Проверяем только админские страницы
+    if (pathname.startsWith('/admin')) {
         const isAuthenticated = request.cookies.get('admin-authenticated')?.value === 'true'
 
         if (!isAuthenticated) {
-            const loginUrl = new URL('/admin/login', request.url)
-            loginUrl.searchParams.set('from', pathname)
-            return NextResponse.redirect(loginUrl)
+            return NextResponse.redirect(new URL('/admin/login', request.url))
         }
     }
 
