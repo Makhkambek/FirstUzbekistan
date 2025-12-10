@@ -33,7 +33,7 @@ export function ResourceCard({ resource, index = 0 }: ResourceCardProps) {
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, amount: 0.2 }}
             transition={{ delay: index * 0.1, duration: 0.5 }}
         >
             <Card className="group h-full overflow-hidden hover:shadow-lg transition-all duration-300">
