@@ -140,6 +140,7 @@ export interface Database {
                     id: string
                     name: string
                     role: 'captain' | 'programmer' | 'engineer' | 'designer' | 'mentor' | 'coach'
+                    position: string | null  // ДОБАВЬ ЭТО
                     bio: string
                     image_url: string | null
                     github_url: string | null
@@ -154,6 +155,7 @@ export interface Database {
                     id?: string
                     name: string
                     role: 'captain' | 'programmer' | 'engineer' | 'designer' | 'mentor' | 'coach'
+                    position?: string | null  // ДОБАВЬ ЭТО
                     bio: string
                     image_url?: string | null
                     github_url?: string | null
@@ -168,6 +170,7 @@ export interface Database {
                     id?: string
                     name?: string
                     role?: 'captain' | 'programmer' | 'engineer' | 'designer' | 'mentor' | 'coach'
+                    position?: string | null  // ДОБАВЬ ЭТО
                     bio?: string
                     image_url?: string | null
                     github_url?: string | null

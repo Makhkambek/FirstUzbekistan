@@ -1,8 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   reactCompiler: true,
+
+  // Отключаем оптимизацию изображений
+  images: {
+    unoptimized: true,
+  },
 };
 
 export default nextConfig;

@@ -1,17 +1,24 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/client";
 import { ImageIcon, AlertCircle, CheckCircle } from "lucide-react";
+import type { Database } from "@/types/database";
+
+type TeamMember = Database['public']['Tables']['team_members']['Row'];
 
 const supabase = createClient();
 
-export default function NewTeamMemberPage() {
+export default function EditTeamMemberPage() {
     const router = useRouter();
+    const params = useParams();
+    const memberId = params.id as string;
+
     const [loading, setLoading] = useState(false);
+    const [fetching, setFetching] = useState(true);
     const [imageError, setImageError] = useState(false);
     const [imageLoaded, setImageLoaded] = useState(false);
     const [formData, setFormData] = useState({
@@ -26,6 +33,44 @@ export default function NewTeamMemberPage() {
         order: 0,
         is_active: true,
     });
+
+    useEffect(() => {
+        fetchMember();
+    }, [memberId]);
+
+    async function fetchMember() {
+        const { data, error } = await supabase
+            .from("team_members")
+            .select("*")
+            .eq("id", memberId)
+            .single();
+
+        if (error) {
+            alert("Ошибка загрузки: " + error.message);
+            router.push("/admin/team");
+            return;
+        }
+
+        if (data) {
+            setFormData({
+                name: data.name,
+                role: data.role,
+                position: data.position || "",
+                bio: data.bio,
+                image_url: data.image_url || "",
+                github_url: data.github_url || "",
+                linkedin_url: data.linkedin_url || "",
+                telegram_url: data.telegram_url || "",
+                order: data.order,
+                is_active: data.is_active,
+            });
+            if (data.image_url) {
+                setImageLoaded(true);
+            }
+        }
+
+        setFetching(false);
+    }
 
     function normalizeImageUrl(url: string): string {
         if (!url) return "";
@@ -64,7 +109,7 @@ export default function NewTeamMemberPage() {
         e.preventDefault();
         setLoading(true);
 
-        const dataToSave = {
+        const dataToUpdate = {
             ...formData,
             position: formData.position || null,
             image_url: formData.image_url || null,
@@ -73,7 +118,10 @@ export default function NewTeamMemberPage() {
             telegram_url: formData.telegram_url || null,
         };
 
-        const { error } = await supabase.from("team_members").insert([dataToSave]);
+        const { error } = await supabase
+            .from("team_members")
+            .update(dataToUpdate)
+            .eq("id", memberId);
 
         if (error) {
             alert("Ошибка: " + error.message);
@@ -83,12 +131,20 @@ export default function NewTeamMemberPage() {
         }
     }
 
+    if (fetching) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            </div>
+        );
+    }
+
     return (
         <div className="space-y-6">
             <div>
-                <h1 className="text-3xl font-bold tracking-tight">Новый участник</h1>
+                <h1 className="text-3xl font-bold tracking-tight">Редактировать участника</h1>
                 <p className="text-muted-foreground mt-2">
-                    Добавьте нового члена команды
+                    Измените данные члена команды
                 </p>
             </div>
 
@@ -164,7 +220,6 @@ export default function NewTeamMemberPage() {
                                         <li>Загрузите фото на <a href="https://imgur.com/upload" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">imgur.com/upload</a></li>
                                         <li>Нажмите правой кнопкой на изображение</li>
                                         <li>Выберите "Копировать адрес изображения"</li>
-                                        <li>Ссылка должна быть вида: <code className="bg-background px-1 rounded">https://i.imgur.com/xxxxx.jpg</code></li>
                                     </ol>
                                     <p className="mt-2"><strong>ImgBB:</strong></p>
                                     <ol className="list-decimal list-inside pl-2 space-y-1">
@@ -172,17 +227,6 @@ export default function NewTeamMemberPage() {
                                         <li>После загрузки скопируйте "Direct link"</li>
                                     </ol>
                                 </div>
-
-                                {imageError && (
-                                    <div className="mt-2 p-2 bg-red-50 border border-red-200 rounded text-red-600">
-                                        <p className="font-medium">Возможные причины ошибки:</p>
-                                        <ul className="list-disc list-inside mt-1">
-                                            <li>Ссылка ведёт на страницу, а не на изображение</li>
-                                            <li>Изображение было удалено</li>
-                                            <li>Сервис блокирует внешние запросы</li>
-                                        </ul>
-                                    </div>
-                                )}
                             </div>
                         </div>
 
@@ -194,7 +238,6 @@ export default function NewTeamMemberPage() {
                                 value={formData.name}
                                 onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
                                 className="w-full px-4 py-2 border border-border rounded-lg bg-background"
-                                placeholder="Иван Иванов"
                                 required
                             />
                         </div>
@@ -221,7 +264,7 @@ export default function NewTeamMemberPage() {
                             </select>
                         </div>
 
-                        {/* Position - НОВОЕ ПОЛЕ */}
+                        {/* Position */}
                         <div>
                             <label className="block text-sm font-medium mb-2">Должность / Специализация</label>
                             <input
@@ -244,7 +287,6 @@ export default function NewTeamMemberPage() {
                                 onChange={(e) => setFormData((prev) => ({ ...prev, bio: e.target.value }))}
                                 className="w-full px-4 py-2 border border-border rounded-lg bg-background"
                                 rows={4}
-                                placeholder="Краткая биография участника..."
                                 required
                             />
                         </div>
@@ -252,7 +294,7 @@ export default function NewTeamMemberPage() {
                         {/* Social Links */}
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div>
-                                <label className="block text-sm font-medium mb-2">GitHub (опционально)</label>
+                                <label className="block text-sm font-medium mb-2">GitHub</label>
                                 <input
                                     type="url"
                                     value={formData.github_url}
@@ -264,7 +306,7 @@ export default function NewTeamMemberPage() {
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium mb-2">LinkedIn (опционально)</label>
+                                <label className="block text-sm font-medium mb-2">LinkedIn</label>
                                 <input
                                     type="url"
                                     value={formData.linkedin_url}
@@ -276,7 +318,7 @@ export default function NewTeamMemberPage() {
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium mb-2">Telegram (опционально)</label>
+                                <label className="block text-sm font-medium mb-2">Telegram</label>
                                 <input
                                     type="url"
                                     value={formData.telegram_url}
@@ -327,7 +369,7 @@ export default function NewTeamMemberPage() {
                         {/* Actions */}
                         <div className="flex gap-4 pt-4">
                             <Button type="submit" disabled={loading || (formData.image_url !== "" && imageError)}>
-                                {loading ? "Сохранение..." : "Создать"}
+                                {loading ? "Сохранение..." : "Сохранить"}
                             </Button>
                             <Button
                                 type="button"
