@@ -86,6 +86,7 @@ export default function AdminSponsorsPage() {
                 data={sponsors}
                 columns={columns}
                 onDelete={handleDelete}
+                editHref={(sponsor) => `/admin/sponsors/${sponsor.id}`}
                 newHref="/admin/sponsors/new"
                 loading={loading}
                 emptyMessage="Нет спонсоров"
