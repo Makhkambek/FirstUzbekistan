@@ -66,9 +66,9 @@ export default function EditSponsorPage() {
 
         const dataToUpdate = {
             ...formData,
-            logo_url: formData.logo_url || null,
-            website_url: formData.website_url || null,
-            description: formData.description || null,
+            logo_url: formData.logo_url || undefined,
+            website_url: formData.website_url || undefined,
+            description: formData.description || undefined,
         };
 
         const { error } = await supabase

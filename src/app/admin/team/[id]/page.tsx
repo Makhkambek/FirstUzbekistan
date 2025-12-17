@@ -111,11 +111,11 @@ export default function EditTeamMemberPage() {
 
         const dataToUpdate = {
             ...formData,
-            position: formData.position || null,
-            image_url: formData.image_url || null,
-            github_url: formData.github_url || null,
-            linkedin_url: formData.linkedin_url || null,
-            telegram_url: formData.telegram_url || null,
+            position: formData.position || undefined,
+            image_url: formData.image_url || undefined,
+            github_url: formData.github_url || undefined,
+            linkedin_url: formData.linkedin_url || undefined,
+            telegram_url: formData.telegram_url || undefined,
         };
 
         const { error } = await supabase

@@ -88,7 +88,7 @@ export default function EditLessonPage() {
 
         const dataToUpdate = {
             ...formData,
-            thumbnail_url: formData.thumbnail_url || null,
+            thumbnail_url: formData.thumbnail_url || undefined,
         };
 
         const { error } = await supabase

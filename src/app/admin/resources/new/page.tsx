@@ -36,7 +36,7 @@ export default function NewResourcePage() {
         const dataToSave = {
             ...formData,
             tags: tagsArray,
-            preview_url: formData.preview_url || null,
+            preview_url: formData.preview_url || undefined,
         };
 
         const { error } = await supabase.from("resources").insert([dataToSave]);
