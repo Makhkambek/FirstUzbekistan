@@ -11,8 +11,19 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { BentoGrid, BentoItem } from "@/components/features/bento-grid";
 import { LessonCard } from "@/components/features/lesson-card";
+import { HeroBackgroundSlider } from "@/components/features/hero-background-slider";
 import { getPopularLessons, getActiveAnnouncements } from "@/lib/supabase-data";
 import { Lesson, Announcement } from "@/types";
+
+// Hero background images
+const heroImages = [
+  "/hero/hero-1.jpg",
+  "/hero/hero-2.jpg",
+  "/hero/hero-3.jpg",
+  "/hero/hero-4.jpg",
+  "/hero/hero-5.jpg",
+  "/hero/hero-6.jpg",
+];
 
 const features = [
   {
@@ -69,11 +80,8 @@ export default function HomePage() {
     <>
       {/* Hero Section */}
       <section className="relative overflow-hidden py-20 md:py-32">
-        {/* Background */}
-        <div className="absolute inset-0 -z-10">
-          <div className="absolute inset-0 bg-gradient-to-br from-ftc-red/10 via-transparent to-ftc-blue/10" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-ftc-red/10 blur-[120px]" />
-        </div>
+        {/* Background Slider */}
+        <HeroBackgroundSlider images={heroImages} interval={10000} />
 
         <Container>
           <motion.div
@@ -83,11 +91,11 @@ export default function HomePage() {
             className="mx-auto max-w-4xl text-center"
           >
 
-            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
+            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl text-white drop-shadow-2xl">
               <span className="text-gradient-ftc">FIRST</span> Uzbekistan
             </h1>
 
-            <p className="mt-6 text-lg text-muted-foreground md:text-xl max-w-2xl mx-auto">
+            <p className="mt-6 text-lg text-white/90 md:text-xl max-w-2xl mx-auto drop-shadow-lg">
               Мы — команда молодых инженеров и программистов, представляющих
               Узбекистан на международных робототехнических соревнованиях
               FIRST Tech Challenge.
