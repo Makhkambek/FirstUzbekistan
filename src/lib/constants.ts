@@ -7,9 +7,28 @@ export const SITE_CONFIG = {
 
 export const NAVIGATION = [
     { label: "Главная", href: "/" },
+    { label: "О FIRST", href: "/about-first" },
     { label: "Уроки", href: "/lessons" },
     { label: "О команде", href: "/about" },
     { label: "Подать заявку", href: "/apply" },
+];
+
+export const COMPETITIONS = [
+    {
+        label: "FIRST Global Challenge",
+        href: "/competitions/fgc",
+        description: "Международные олимпиады по робототехнике"
+    },
+    {
+        label: "FIRST Tech Challenge",
+        href: "/competitions/ftc",
+        description: "Соревнования для старшеклассников"
+    },
+    {
+        label: "FIRST LEGO League",
+        href: "/competitions/fll",
+        description: "Робототехника для школьников"
+    },
 ];
 
 export const SOCIAL_LINKS = {

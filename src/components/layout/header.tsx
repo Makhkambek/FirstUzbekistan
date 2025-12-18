@@ -6,10 +6,11 @@ import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { NAVIGATION } from "@/lib/constants";
+import { NAVIGATION, COMPETITIONS } from "@/lib/constants";
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { NavigationDropdown, NavigationDropdownMobile } from "./navigation-dropdown";
 
 export function Header() {
     const [isOpen, setIsOpen] = useState(false);
@@ -45,6 +46,7 @@ export function Header() {
                                 {item.label}
                             </Link>
                         ))}
+                        <NavigationDropdown label="Соревнования" items={COMPETITIONS} />
                     </div>
 
                     {/* Right side */}
@@ -92,6 +94,7 @@ export function Header() {
                                         {item.label}
                                     </Link>
                                 ))}
+                                <NavigationDropdownMobile label="Соревнования" items={COMPETITIONS} />
                                 <div className="pt-4 px-3">
                                     <Button asChild className="w-full">
                                         <Link href="/apply" onClick={() => setIsOpen(false)}>

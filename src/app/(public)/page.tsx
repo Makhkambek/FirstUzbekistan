@@ -79,40 +79,69 @@ export default function HomePage() {
   return (
     <>
       {/* Hero Section */}
-      <section className="relative overflow-hidden py-20 md:py-32">
+      <section className="relative overflow-hidden py-20 md:py-32 flex items-center">
         {/* Background Slider */}
         <HeroBackgroundSlider images={heroImages} interval={10000} />
 
         <Container>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="mx-auto max-w-4xl text-center"
-          >
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            {/* Left Side - Text Content */}
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              className="text-center lg:text-left"
+            >
+              <h1 className="text-5xl font-black tracking-tight sm:text-6xl md:text-7xl lg:text-7xl xl:text-8xl">
+                <span className="bg-gradient-to-r from-ftc-red via-pink-500 to-ftc-blue bg-clip-text text-transparent animate-gradient-x drop-shadow-[0_4px_20px_rgba(231,76,60,0.6)]"
+                      style={{
+                        WebkitTextStroke: '2px rgba(255,255,255,0.1)',
+                        paintOrder: 'stroke fill'
+                      }}>
+                  FIRST
+                </span>
+                {" "}
+                <span className="text-white drop-shadow-[0_4px_20px_rgba(0,0,0,0.8)]"
+                      style={{
+                        WebkitTextStroke: '1px rgba(0,0,0,0.3)',
+                        paintOrder: 'stroke fill'
+                      }}>
+                  Uzbekistan
+                </span>
+              </h1>
 
-            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl text-white drop-shadow-2xl">
-              <span className="text-gradient-ftc">FIRST</span> Uzbekistan
-            </h1>
+              <p className="mt-6 text-lg text-white md:text-xl lg:text-2xl leading-relaxed font-semibold drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]"
+                 style={{
+                   textShadow: '0 0 20px rgba(0,0,0,0.9), 0 2px 4px rgba(0,0,0,0.8)'
+                 }}>
+                Мы — команда молодых инженеров и программистов, представляющих
+                Узбекистан на международных робототехнических соревнованиях
+                FIRST Tech Challenge.
+              </p>
 
-            <p className="mt-6 text-lg text-white/90 md:text-xl max-w-2xl mx-auto drop-shadow-lg">
-              Мы — команда молодых инженеров и программистов, представляющих
-              Узбекистан на международных робототехнических соревнованиях
-              FIRST Tech Challenge.
-            </p>
+              <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                <Button asChild size="lg" className="bg-gradient-to-r from-ftc-red to-pink-600 hover:from-ftc-red/90 hover:to-pink-600/90 border-0 shadow-[0_0_30px_rgba(231,76,60,0.6)] hover:shadow-[0_0_40px_rgba(231,76,60,0.8)] transition-all duration-300 text-lg px-8 py-6">
+                  <Link href="/apply">
+                    Присоединиться к команде
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Link>
+                </Button>
+                <Button asChild variant="outline" size="lg" className="border-2 border-white/50 bg-white/5 hover:bg-white/15 text-white backdrop-blur-md shadow-[0_0_20px_rgba(255,255,255,0.3)] text-lg px-8 py-6">
+                  <Link href="/lessons">Начать обучение</Link>
+                </Button>
+              </div>
+            </motion.div>
 
-            <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-              <Button asChild size="lg">
-                <Link href="/apply">
-                  Присоединиться к команде
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
-              </Button>
-              <Button asChild variant="outline" size="lg">
-                <Link href="/lessons">Начать обучение</Link>
-              </Button>
-            </div>
-          </motion.div>
+            {/* Right Side - Visual Space for Photos */}
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="hidden lg:block"
+            >
+              {/* Пустое пространство для видимости фото */}
+            </motion.div>
+          </div>
         </Container>
       </section>
 

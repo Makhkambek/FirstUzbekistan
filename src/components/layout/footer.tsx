@@ -80,19 +80,21 @@ export function Footer() {
                                 <li>
                                     <a
                                         href="mailto:teshabayevmakhkambek@gmail.com"
-                                        className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                                        className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
                                     >
-                                        Email
+                                        <Mail className="h-4 w-4" />
+                                        teshabayevmakhkambek@gmail.com
                                     </a>
                                 </li>
                                 <li>
                                     <a
-                                        href="https://t.me/firstuzbekistan"
+                                        href="https://t.me/teshabayevv"
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                                        className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
                                     >
-                                        Telegram
+                                        <Send className="h-4 w-4" />
+                                        @teshabayevv
                                     </a>
                                 </li>
                             </ul>
