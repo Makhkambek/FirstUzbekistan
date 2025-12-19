@@ -26,6 +26,7 @@ export default function EditLessonPage() {
         description: "",
         video_url: "",
         thumbnail_url: "",
+        program: "ftc" as "ftc" | "fll",
         category: "engineering" as "engineering" | "programming",
         subcategory_id: "",
         duration: "",
@@ -58,6 +59,7 @@ export default function EditLessonPage() {
                 description: data.description,
                 video_url: data.video_url,
                 thumbnail_url: data.thumbnail_url || "",
+                program: data.program,
                 category: data.category,
                 subcategory_id: data.subcategory_id,
                 duration: data.duration,
@@ -215,6 +217,24 @@ export default function EditLessonPage() {
                             <p className="text-xs text-muted-foreground mt-1">
                                 Рекомендуется 1280x720px. Можно использовать imgur.com или imgbb.com для загрузки
                             </p>
+                        </div>
+
+                        {/* Program */}
+                        <div>
+                            <label className="block text-sm font-medium mb-2">Программа</label>
+                            <select
+                                value={formData.program}
+                                onChange={(e) =>
+                                    setFormData((prev) => ({
+                                        ...prev,
+                                        program: e.target.value as "ftc" | "fll",
+                                    }))
+                                }
+                                className="w-full px-4 py-2 border border-border rounded-lg bg-background"
+                            >
+                                <option value="ftc">FIRST Tech Challenge (FTC)</option>
+                                <option value="fll">FIRST LEGO League (FLL)</option>
+                            </select>
                         </div>
 
                         {/* Category & Difficulty */}

@@ -2,18 +2,25 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
-import { ArrowLeft, Wrench, Calendar } from "lucide-react";
+import { ArrowLeft, Wrench, Calendar, Blocks } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { ResourceCard } from "@/components/features/resource-card";
 import { getResourcesByCategory, getAvailableYearsForCategory } from "@/lib/supabase-data";
 import type { Database } from "@/types/database";
+import { cn } from "@/lib/utils";
 
 type Resource = Database['public']['Tables']['resources']['Row'];
+type Program = 'ftc' | 'fll';
 
 export default function CadsResourcesPage() {
+    const searchParams = useSearchParams();
+    const program = (searchParams.get('program') as Program) || 'ftc';
+
     const [resources, setResources] = useState<Resource[]>([]);
     const [years, setYears] = useState<number[]>([]);
     const [selectedYear, setSelectedYear] = useState<number | null>(null);
@@ -23,7 +30,7 @@ export default function CadsResourcesPage() {
         async function fetchData() {
             setLoading(true);
             const [resourcesData, yearsData] = await Promise.all([
-                getResourcesByCategory('cad', selectedYear || undefined),
+                getResourcesByCategory('cad', selectedYear || undefined, program),
                 getAvailableYearsForCategory('cad'),
             ]);
             console.log('CAD Resources loaded:', resourcesData.length);
@@ -32,7 +39,7 @@ export default function CadsResourcesPage() {
             setLoading(false);
         }
         fetchData();
-    }, [selectedYear]);
+    }, [selectedYear, program]);
 
     return (
         <>
@@ -50,18 +57,40 @@ export default function CadsResourcesPage() {
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="flex items-center gap-4"
                     >
-                        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-orange-500 text-white">
-                            <Wrench className="h-8 w-8" />
-                        </div>
-                        <div>
-                            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
-                                CAD Модели
-                            </h1>
-                            <p className="mt-1 text-muted-foreground">
-                                3D модели для вашего FTC робота
-                            </p>
+                        <Badge
+                            className={cn(
+                                "mb-4",
+                                program === 'ftc'
+                                    ? "bg-ftc-red hover:bg-ftc-red text-white"
+                                    : "bg-yellow-500 hover:bg-yellow-500 text-white"
+                            )}
+                        >
+                            {program === 'ftc' ? (
+                                "FIRST Tech Challenge"
+                            ) : (
+                                <>
+                                    <Blocks className="mr-1 h-3 w-3" />
+                                    FIRST LEGO League
+                                </>
+                            )}
+                        </Badge>
+
+                        <div className="flex items-center gap-4">
+                            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-orange-500 text-white">
+                                <Wrench className="h-8 w-8" />
+                            </div>
+                            <div>
+                                <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
+                                    CAD Модели
+                                </h1>
+                                <p className="mt-1 text-muted-foreground">
+                                    {program === 'ftc'
+                                        ? "3D модели для вашего FTC робота"
+                                        : "LEGO модели и строительные инструкции для FLL"
+                                    }
+                                </p>
+                            </div>
                         </div>
                     </motion.div>
                 </Container>

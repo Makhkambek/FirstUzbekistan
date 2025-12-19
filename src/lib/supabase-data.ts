@@ -14,12 +14,36 @@ type Resource = Database['public']['Tables']['resources']['Row']
 
 // ===== SUBCATEGORIES =====
 
-export async function getSubcategoriesByCategory(category: 'engineering' | 'programming'): Promise<Subcategory[]> {
-    const { data, error } = await supabase
+export async function getSubcategoriesByCategory(
+    category: 'engineering' | 'programming',
+    program?: 'ftc' | 'fll'
+): Promise<Subcategory[]> {
+    let query = supabase
         .from('subcategories')
         .select('*')
         .eq('category', category)
-        .order('order', { ascending: true })
+
+    if (program) {
+        query = query.eq('program', program)
+    }
+
+    const { data, error } = await query.order('order', { ascending: true })
+
+    // If there's an error and program filter was used, try without it
+    if (error && program) {
+        const { data: fallbackData, error: fallbackError } = await supabase
+            .from('subcategories')
+            .select('*')
+            .eq('category', category)
+            .order('order', { ascending: true })
+
+        if (fallbackError) {
+            console.error('Error fetching subcategories:', fallbackError)
+            return []
+        }
+
+        return fallbackData || []
+    }
 
     if (error) {
         console.error('Error fetching subcategories:', error)
@@ -108,13 +132,36 @@ export async function getLessonBySlug(slug: string): Promise<Lesson | null> {
     return data
 }
 
-export async function getPopularLessons(limit = 3): Promise<Lesson[]> {
-    const { data, error } = await supabase
+export async function getPopularLessons(limit = 3, program?: 'ftc' | 'fll'): Promise<Lesson[]> {
+    let query = supabase
         .from('lessons')
         .select('*')
         .eq('status', 'published')
+
+    if (program) {
+        query = query.eq('program', program)
+    }
+
+    const { data, error } = await query
         .order('views', { ascending: false })
         .limit(limit)
+
+    // If there's an error and program filter was used, try without it
+    if (error && program) {
+        const { data: fallbackData, error: fallbackError } = await supabase
+            .from('lessons')
+            .select('*')
+            .eq('status', 'published')
+            .order('views', { ascending: false })
+            .limit(limit)
+
+        if (fallbackError) {
+            console.error('Error fetching popular lessons:', fallbackError)
+            return []
+        }
+
+        return fallbackData || []
+    }
 
     if (error) {
         console.error('Error fetching popular lessons:', error)
@@ -209,20 +256,24 @@ export async function getSiteSettings(): Promise<SiteSettings | null> {
 
 // ===== RESOURCES =====
 
-export async function getResourcesByType(type: 'engineering' | 'programming', year?: number): Promise<Resource[]> {
+export async function getResourcesByType(type: 'engineering' | 'programming', year?: number, program?: 'ftc' | 'fll'): Promise<Resource[]> {
     let query = supabase
         .from('resources')
         .select('*')
         .eq('type', type)
         .eq('is_active', true)
-        .order('year', { ascending: false })
-        .order('order', { ascending: true })
+
+    if (program) {
+        query = query.eq('program', program)
+    }
 
     if (year) {
         query = query.eq('year', year)
     }
 
     const { data, error } = await query
+        .order('year', { ascending: false })
+        .order('order', { ascending: true })
 
     if (error) {
         console.error('Error fetching resources by type:', error)
@@ -233,20 +284,24 @@ export async function getResourcesByType(type: 'engineering' | 'programming', ye
     return data || []
 }
 
-export async function getResourcesByCategory(category: 'cad' | 'code' | 'drawing' | 'other', year?: number): Promise<Resource[]> {
+export async function getResourcesByCategory(category: 'cad' | 'code' | 'drawing' | 'other', year?: number, program?: 'ftc' | 'fll'): Promise<Resource[]> {
     let query = supabase
         .from('resources')
         .select('*')
         .eq('category', category)
         .eq('is_active', true)
-        .order('year', { ascending: false })
-        .order('order', { ascending: true })
+
+    if (program) {
+        query = query.eq('program', program)
+    }
 
     if (year) {
         query = query.eq('year', year)
     }
 
     const { data, error } = await query
+        .order('year', { ascending: false })
+        .order('order', { ascending: true })
 
     if (error) {
         console.error('Error fetching resources by category:', error)

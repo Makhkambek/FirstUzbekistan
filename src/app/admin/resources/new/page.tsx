@@ -16,6 +16,7 @@ export default function NewResourcePage() {
         description: "",
         category: "cad" as "cad" | "code" | "drawing" | "other",
         type: "engineering" as "engineering" | "programming",
+        program: "ftc" as "ftc" | "fll",
         year: new Date().getFullYear(),
         file_url: "",
         preview_url: "",
@@ -87,6 +88,24 @@ export default function NewResourcePage() {
                                 rows={3}
                                 required
                             />
+                        </div>
+
+                        {/* Program */}
+                        <div>
+                            <label className="block text-sm font-medium mb-2">Программа</label>
+                            <select
+                                value={formData.program}
+                                onChange={(e) =>
+                                    setFormData((prev) => ({
+                                        ...prev,
+                                        program: e.target.value as "ftc" | "fll",
+                                    }))
+                                }
+                                className="w-full px-4 py-2 border border-border rounded-lg bg-background"
+                            >
+                                <option value="ftc">FIRST Tech Challenge (FTC)</option>
+                                <option value="fll">FIRST LEGO League (FLL)</option>
+                            </select>
                         </div>
 
                         {/* Type & Category */}

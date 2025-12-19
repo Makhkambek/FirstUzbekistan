@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Wrench, Code, ArrowRight, BookOpen } from "lucide-react";
+import { Wrench, Code, ArrowRight, BookOpen, Blocks } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
 import { Card, CardContent } from "@/components/ui/card";
@@ -11,9 +11,11 @@ import { Badge } from "@/components/ui/badge";
 import { LessonCard } from "@/components/features/lesson-card";
 import { getPopularLessons, getSubcategoriesByCategory } from "@/lib/supabase-data";
 import type { Database } from "@/types/database";
+import { cn } from "@/lib/utils";
 
 type Lesson = Database['public']['Tables']['lessons']['Row'];
 type Subcategory = Database['public']['Tables']['subcategories']['Row'];
+type Program = 'ftc' | 'fll';
 
 const categories = [
     {
@@ -28,7 +30,7 @@ const categories = [
     {
         id: "programming" as const,
         title: "Программирование",
-        description: "FTC SDK, TeleOp управление, автономные системы и датчики",
+        description: "SDK, TeleOp управление, автономные системы и датчики",
         icon: Code,
         href: "/lessons/programming",
         color: "programming",
@@ -37,16 +39,18 @@ const categories = [
 ];
 
 export default function LessonsPage() {
+    const [selectedProgram, setSelectedProgram] = useState<Program>('ftc');
     const [popularLessons, setPopularLessons] = useState<Lesson[]>([]);
     const [subcategories, setSubcategories] = useState<Record<string, Subcategory[]>>({});
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         async function fetchData() {
+            setLoading(true);
             const [lessons, engineeringSubcats, programmingSubcats] = await Promise.all([
-                getPopularLessons(6),
-                getSubcategoriesByCategory('engineering'),
-                getSubcategoriesByCategory('programming'),
+                getPopularLessons(6, selectedProgram),
+                getSubcategoriesByCategory('engineering', selectedProgram),
+                getSubcategoriesByCategory('programming', selectedProgram),
             ]);
 
             setPopularLessons(lessons);
@@ -57,7 +61,7 @@ export default function LessonsPage() {
             setLoading(false);
         }
         fetchData();
-    }, []);
+    }, [selectedProgram]);
 
     return (
         <>
@@ -77,9 +81,35 @@ export default function LessonsPage() {
                             Видеоуроки
                         </h1>
                         <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-                            Бесплатные образовательные материалы по робототехнике для участников
-                            FIRST Tech Challenge
+                            Бесплатные образовательные материалы по робототехнике для участников FIRST
                         </p>
+
+                        {/* Program Tabs */}
+                        <div className="mt-8 flex justify-center gap-2">
+                            <button
+                                onClick={() => setSelectedProgram('ftc')}
+                                className={cn(
+                                    "px-6 py-3 rounded-lg font-medium transition-all",
+                                    selectedProgram === 'ftc'
+                                        ? "bg-ftc-red text-white shadow-lg"
+                                        : "bg-background text-muted-foreground hover:bg-muted"
+                                )}
+                            >
+                                FIRST Tech Challenge
+                            </button>
+                            <button
+                                onClick={() => setSelectedProgram('fll')}
+                                className={cn(
+                                    "px-6 py-3 rounded-lg font-medium transition-all flex items-center gap-2",
+                                    selectedProgram === 'fll'
+                                        ? "bg-yellow-500 text-white shadow-lg"
+                                        : "bg-background text-muted-foreground hover:bg-muted"
+                                )}
+                            >
+                                <Blocks className="h-4 w-4" />
+                                FIRST LEGO League
+                            </button>
+                        </div>
                     </motion.div>
                 </Container>
             </Section>
@@ -111,7 +141,7 @@ export default function LessonsPage() {
                                         viewport={{ once: true }}
                                         transition={{ delay: index * 0.1 }}
                                     >
-                                        <Link href={category.href}>
+                                        <Link href={`${category.href}?program=${selectedProgram}`}>
                                             <Card className="group h-full hover:shadow-lg transition-all duration-300 overflow-hidden">
                                                 {/* Header with gradient */}
                                                 <div className={`bg-gradient-to-r ${category.gradient} p-6 text-white`}>

@@ -2,11 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/admin/data-table";
 import { createClient } from "@/lib/supabase/client";
 import type { Database } from "@/types/database";
+import { cn } from "@/lib/utils";
 
 type Lesson = Database['public']['Tables']['lessons']['Row'];
+type Program = 'ftc' | 'fll' | 'all';
 
 const supabase = createClient();
 
@@ -23,22 +26,82 @@ const difficultyLabels: Record<string, string> = {
     advanced: "Продвинутый",
 };
 
+const programLabels: Record<string, string> = {
+    ftc: "FTC",
+    fll: "FLL",
+};
+
 export default function AdminLessonsPage() {
+    const [selectedProgram, setSelectedProgram] = useState<Program>('all');
     const [lessons, setLessons] = useState<Lesson[]>([]);
+    const [allLessons, setAllLessons] = useState<Lesson[]>([]);
+    const [ftcCount, setFtcCount] = useState(0);
+    const [fllCount, setFllCount] = useState(0);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetchLessons();
+        fetchAllLessons();
     }, []);
 
-    async function fetchLessons() {
-        const { data } = await supabase
+    useEffect(() => {
+        filterLessons();
+    }, [selectedProgram, allLessons]);
+
+    async function fetchAllLessons() {
+        setLoading(true);
+
+        // Fetch all lessons
+        const { data: allData } = await supabase
             .from("lessons")
             .select("*")
             .order("category")
             .order("order");
-        setLessons(data || []);
+
+        setAllLessons(allData || []);
+
+        // Try to get counts by program
+        const { data: ftcData, error: ftcError } = await supabase
+            .from("lessons")
+            .select("id")
+            .eq('program', 'ftc');
+
+        const { data: fllData, error: fllError } = await supabase
+            .from("lessons")
+            .select("id")
+            .eq('program', 'fll');
+
+        // If program field doesn't exist yet (before migration)
+        if (ftcError || fllError) {
+            console.log('Program field not found, using defaults');
+            // Before migration: all are FTC, none are FLL
+            setFtcCount(allData?.length || 0);
+            setFllCount(0);
+        } else {
+            // After migration: use actual counts
+            setFtcCount(ftcData?.length || 0);
+            setFllCount(fllData?.length || 0);
+        }
+
         setLoading(false);
+    }
+
+    function filterLessons() {
+        if (selectedProgram === 'all') {
+            setLessons(allLessons);
+            return;
+        }
+
+        // Filter locally based on program or treat all as FTC if program field doesn't exist
+        const filtered = allLessons.filter(lesson => {
+            // If lesson has program field, use it
+            if (lesson.program) {
+                return lesson.program === selectedProgram;
+            }
+            // If no program field (before migration), treat as FTC
+            return selectedProgram === 'ftc';
+        });
+
+        setLessons(filtered);
     }
 
     async function handleDelete(lesson: Lesson) {
@@ -66,6 +129,19 @@ export default function AdminLessonsPage() {
                     <p className="text-sm text-muted-foreground line-clamp-1">{item.description}</p>
                 </div>
             ),
+        },
+        {
+            key: "program",
+            label: "Программа",
+            render: (item: Lesson) => {
+                // Handle case where program field doesn't exist yet (before migration)
+                const program = item.program || 'ftc';
+                return (
+                    <Badge variant={program === "ftc" ? "destructive" : "default"}>
+                        {programLabels[program as 'ftc' | 'fll']}
+                    </Badge>
+                );
+            },
         },
         {
             key: "category",
@@ -107,8 +183,32 @@ export default function AdminLessonsPage() {
                 </p>
             </div>
 
+            {/* Filter Tabs */}
+            <div className="flex gap-2">
+                <Button
+                    variant={selectedProgram === 'all' ? 'default' : 'outline'}
+                    onClick={() => setSelectedProgram('all')}
+                >
+                    Все ({allLessons.length})
+                </Button>
+                <Button
+                    variant={selectedProgram === 'ftc' ? 'default' : 'outline'}
+                    onClick={() => setSelectedProgram('ftc')}
+                    className={cn(selectedProgram === 'ftc' && "bg-ftc-red hover:bg-ftc-red/90")}
+                >
+                    FTC ({ftcCount})
+                </Button>
+                <Button
+                    variant={selectedProgram === 'fll' ? 'default' : 'outline'}
+                    onClick={() => setSelectedProgram('fll')}
+                    className={cn(selectedProgram === 'fll' && "bg-yellow-500 hover:bg-yellow-500/90")}
+                >
+                    FLL ({fllCount})
+                </Button>
+            </div>
+
             <DataTable
-                title="Все уроки"
+                title={selectedProgram === 'all' ? 'Все уроки' : `Уроки ${programLabels[selectedProgram]}`}
                 data={lessons}
                 columns={columns}
                 onDelete={handleDelete}

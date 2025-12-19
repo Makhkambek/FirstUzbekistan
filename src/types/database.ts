@@ -15,6 +15,7 @@ export interface Database {
                     slug: string
                     title: string
                     description: string
+                    program: 'ftc' | 'fll'
                     category: 'engineering' | 'programming'
                     order: number
                     created_at: string
@@ -25,6 +26,7 @@ export interface Database {
                     slug: string
                     title: string
                     description: string
+                    program: 'ftc' | 'fll'
                     category: 'engineering' | 'programming'
                     order?: number
                     created_at?: string
@@ -35,6 +37,7 @@ export interface Database {
                     slug?: string
                     title?: string
                     description?: string
+                    program?: 'ftc' | 'fll'
                     category?: 'engineering' | 'programming'
                     order?: number
                     created_at?: string
@@ -50,6 +53,7 @@ export interface Database {
                     description: string
                     video_url: string
                     thumbnail_url: string | null
+                    program: 'ftc' | 'fll'
                     category: 'engineering' | 'programming'
                     subcategory_id: string
                     duration: string
@@ -67,6 +71,7 @@ export interface Database {
                     description: string
                     video_url: string
                     thumbnail_url?: string | null
+                    program: 'ftc' | 'fll'
                     category: 'engineering' | 'programming'
                     subcategory_id: string
                     duration: string
@@ -84,6 +89,7 @@ export interface Database {
                     description?: string
                     video_url?: string
                     thumbnail_url?: string | null
+                    program?: 'ftc' | 'fll'
                     category?: 'engineering' | 'programming'
                     subcategory_id?: string
                     duration?: string
@@ -256,6 +262,7 @@ export interface Database {
                     description: string
                     category: 'cad' | 'code' | 'drawing' | 'other'
                     type: 'engineering' | 'programming'
+                    program: 'ftc' | 'fll'
                     year: number
                     file_url: string
                     preview_url: string | null
@@ -271,6 +278,7 @@ export interface Database {
                     description: string
                     category: 'cad' | 'code' | 'drawing' | 'other'
                     type: 'engineering' | 'programming'
+                    program?: 'ftc' | 'fll'
                     year: number
                     file_url: string
                     preview_url?: string | null
@@ -286,6 +294,7 @@ export interface Database {
                     description?: string
                     category?: 'cad' | 'code' | 'drawing' | 'other'
                     type?: 'engineering' | 'programming'
+                    program?: 'ftc' | 'fll'
                     year?: number
                     file_url?: string
                     preview_url?: string | null
