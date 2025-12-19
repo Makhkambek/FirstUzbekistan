@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { Globe, Users, Trophy, Lightbulb, Calendar, Award } from "lucide-react";
 import { Container } from "@/components/ui/container";
@@ -10,6 +11,11 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 export default function FGCPage() {
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, []);
+
   return (
     <>
       {/* Hero Section */}

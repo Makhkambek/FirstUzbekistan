@@ -49,6 +49,11 @@ export default function ApplyPage() {
     const [settings, setSettings] = useState<SiteSettings | null>(null);
     const [loading, setLoading] = useState(true);
 
+    // Scroll to top when component mounts
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: 'instant' });
+    }, []);
+
     useEffect(() => {
         async function fetchData() {
             const settingsData = await getSiteSettings();

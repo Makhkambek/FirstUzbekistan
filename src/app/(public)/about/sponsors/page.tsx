@@ -18,6 +18,11 @@ export default function SponsorsPage() {
     const [sponsors, setSponsors] = useState<Sponsor[]>([]);
     const [loading, setLoading] = useState(true);
 
+    // Scroll to top when component mounts
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: 'instant' });
+    }, []);
+
     useEffect(() => {
         async function fetchData() {
             const sponsorsData = await getActiveSponsors();

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowLeft, Calendar } from "lucide-react";
@@ -31,6 +32,11 @@ const timeline = [
 ];
 
 export default function HistoryPage() {
+    // Scroll to top when component mounts
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: 'instant' });
+    }, []);
+
     return (
         <>
             <Section className="bg-muted/30 py-16 md:py-24">

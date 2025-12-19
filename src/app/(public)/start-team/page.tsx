@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   Users,
@@ -22,6 +23,10 @@ import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 
 export default function StartTeamPage() {
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, []);
   const steps = [
     {
       number: 1,

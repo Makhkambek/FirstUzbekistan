@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight, Users, History, Heart, Trophy, Target, Rocket } from "lucide-react";
@@ -54,6 +55,11 @@ const values = [
 ];
 
 export default function AboutPage() {
+    // Scroll to top when component mounts
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: 'instant' });
+    }, []);
+
     return (
         <>
             {/* Hero */}

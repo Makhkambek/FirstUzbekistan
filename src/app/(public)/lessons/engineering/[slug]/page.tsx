@@ -26,6 +26,11 @@ export default function EngineeringLessonPage({ params }: PageProps) {
     const [relatedLessons, setRelatedLessons] = useState<Lesson[]>([]);
     const [loading, setLoading] = useState(true);
 
+    // Scroll to top when component mounts
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: 'instant' });
+    }, []);
+
     useEffect(() => {
         async function fetchData() {
             const lessonData = await getLessonBySlug(slug);

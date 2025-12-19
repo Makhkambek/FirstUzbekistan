@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   Globe,
@@ -24,6 +25,11 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 export default function AboutFirstPage() {
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, []);
+
   return (
     <>
       {/* Hero Section */}
