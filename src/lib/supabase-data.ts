@@ -187,6 +187,20 @@ export async function getLatestLessons(limit = 3): Promise<Lesson[]> {
     return data || []
 }
 
+export async function getTotalLessonsCount(): Promise<number> {
+    const { count, error } = await supabase
+        .from('lessons')
+        .select('*', { count: 'exact', head: true })
+        .eq('status', 'published')
+
+    if (error) {
+        console.error('Error fetching lessons count:', error)
+        return 0
+    }
+
+    return count || 0
+}
+
 // ===== ANNOUNCEMENTS =====
 
 export async function getActiveAnnouncements(): Promise<Announcement[]> {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight, Users, History, Heart, Trophy, Target, Rocket } from "lucide-react";
@@ -9,6 +9,7 @@ import { Section, SectionHeader } from "@/components/ui/section";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { BentoGrid, BentoItem } from "@/components/features/bento-grid";
+import { getTotalLessonsCount } from "@/lib/supabase-data";
 
 const aboutLinks = [
     {
@@ -55,11 +56,22 @@ const values = [
 ];
 
 export default function AboutPage() {
+    const [lessonsCount, setLessonsCount] = useState<number>(0);
+
     // Scroll to top when component mounts - useLayoutEffect runs before paint
     useLayoutEffect(() => {
         window.scrollTo(0, 0);
         document.documentElement.scrollTop = 0;
         document.body.scrollTop = 0;
+    }, []);
+
+    // Fetch total lessons count
+    useEffect(() => {
+        async function fetchLessonsCount() {
+            const count = await getTotalLessonsCount();
+            setLessonsCount(count);
+        }
+        fetchLessonsCount();
     }, []);
 
     return (
@@ -160,7 +172,7 @@ export default function AboutPage() {
                     {[
                         { label: "Лет опыта", value: "3+" },
                         { label: "Участников", value: "15+" },
-                        { label: "Видеоуроков", value: "12" },
+                        { label: "Видеоуроков", value: lessonsCount > 0 ? lessonsCount.toString() : "12" },
                         { label: "Соревнований", value: "5" },
                     ].map((stat, index) => (
                         <motion.div

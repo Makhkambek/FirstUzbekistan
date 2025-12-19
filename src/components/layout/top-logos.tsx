@@ -17,10 +17,10 @@ export function TopLogos() {
             height: "h-32 md:h-40",
         },
         {
-            name: "Our Partner",
+            name: "The Reckless 25444",
             url: "#",
-            image: "https://cdn-icons-png.flaticon.com/512/4712/4712139.png",
-            height: "h-16 md:h-20",
+            image: "/images/wolf-logo.png",
+            height: "h-36 md:h-40",
         },
     ];
 
