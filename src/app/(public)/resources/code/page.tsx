@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useLayoutEffect, useState, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
@@ -26,9 +26,11 @@ function CodeResourcesPageContent() {
     const [selectedYear, setSelectedYear] = useState<number | null>(null);
     const [loading, setLoading] = useState(true);
 
-    // Scroll to top when component mounts or program changes
-    useEffect(() => {
-        window.scrollTo({ top: 0, behavior: 'instant' });
+    // Scroll to top when component mounts or program changes - useLayoutEffect runs before paint
+    useLayoutEffect(() => {
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
     }, [program]);
 
     useEffect(() => {

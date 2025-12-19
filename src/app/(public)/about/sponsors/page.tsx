@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowLeft, Heart, Mail } from "lucide-react";
@@ -18,9 +18,11 @@ export default function SponsorsPage() {
     const [sponsors, setSponsors] = useState<Sponsor[]>([]);
     const [loading, setLoading] = useState(true);
 
-    // Scroll to top when component mounts
-    useEffect(() => {
-        window.scrollTo({ top: 0, behavior: 'instant' });
+    // Scroll to top when component mounts - useLayoutEffect runs before paint
+    useLayoutEffect(() => {
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
     }, []);
 
     useEffect(() => {

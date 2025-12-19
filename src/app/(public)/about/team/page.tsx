@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowLeft, Users as UsersIcon } from "lucide-react";
@@ -17,9 +17,11 @@ export default function TeamPage() {
     const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
     const [loading, setLoading] = useState(true);
 
-    // Scroll to top when component mounts
-    useEffect(() => {
-        window.scrollTo({ top: 0, behavior: 'instant' });
+    // Scroll to top when component mounts - useLayoutEffect runs before paint
+    useLayoutEffect(() => {
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
     }, []);
 
     useEffect(() => {

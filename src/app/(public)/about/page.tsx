@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useLayoutEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight, Users, History, Heart, Trophy, Target, Rocket } from "lucide-react";
@@ -55,9 +55,11 @@ const values = [
 ];
 
 export default function AboutPage() {
-    // Scroll to top when component mounts
-    useEffect(() => {
-        window.scrollTo({ top: 0, behavior: 'instant' });
+    // Scroll to top when component mounts - useLayoutEffect runs before paint
+    useLayoutEffect(() => {
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
     }, []);
 
     return (

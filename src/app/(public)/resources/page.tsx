@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect } from "react";
+import { Suspense, useEffect, useLayoutEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -168,9 +168,11 @@ function ResourcesPageContent() {
     const engineeringResources = resourceCategories.filter(r => r.category === "engineering");
     const programmingResources = resourceCategories.filter(r => r.category === "programming");
 
-    // Scroll to top when component mounts or program changes
-    useEffect(() => {
-        window.scrollTo({ top: 0, behavior: 'instant' });
+    // Scroll to top when component mounts or program changes - useLayoutEffect runs before paint
+    useLayoutEffect(() => {
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
     }, [program]);
 
     return (
