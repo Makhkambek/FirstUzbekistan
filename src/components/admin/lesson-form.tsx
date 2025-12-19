@@ -29,6 +29,7 @@ export function LessonForm({ lesson, mode }: LessonFormProps) {
         description: lesson?.description || "",
         video_url: lesson?.video_url || "",
         thumbnail_url: lesson?.thumbnail_url || "",
+        program: lesson?.program || "ftc" as "ftc" | "fll",
         category: lesson?.category || "engineering" as "engineering" | "programming",
         subcategory_id: lesson?.subcategory_id || "",
         duration: lesson?.duration || "",
@@ -160,6 +161,22 @@ export function LessonForm({ lesson, mode }: LessonFormProps) {
                             placeholder="https://www.youtube.com/watch?v=..."
                             required
                         />
+                    </div>
+
+                    {/* Program */}
+                    <div>
+                        <label className="block text-sm font-medium mb-2">Программа</label>
+                        <select
+                            value={formData.program}
+                            onChange={(e) => setFormData(prev => ({
+                                ...prev,
+                                program: e.target.value as "ftc" | "fll",
+                            }))}
+                            className="w-full px-4 py-2 border border-border rounded-lg bg-background"
+                        >
+                            <option value="ftc">FIRST Tech Challenge (FTC)</option>
+                            <option value="fll">FIRST LEGO League (FLL)</option>
+                        </select>
                     </div>
 
                     {/* Category & Subcategory */}
