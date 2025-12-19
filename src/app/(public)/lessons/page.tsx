@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { Wrench, Code, ArrowRight, BookOpen, Blocks } from "lucide-react";
 import { Container } from "@/components/ui/container";
@@ -38,8 +39,10 @@ const categories = [
     },
 ];
 
-export default function LessonsPage() {
-    const [selectedProgram, setSelectedProgram] = useState<Program>('ftc');
+function LessonsPageContent() {
+    const searchParams = useSearchParams();
+    const programFromUrl = (searchParams.get('program') as Program) || 'ftc';
+    const [selectedProgram, setSelectedProgram] = useState<Program>(programFromUrl);
     const [popularLessons, setPopularLessons] = useState<Lesson[]>([]);
     const [subcategories, setSubcategories] = useState<Record<string, Subcategory[]>>({});
     const [loading, setLoading] = useState(true);
@@ -141,7 +144,7 @@ export default function LessonsPage() {
                                         viewport={{ once: true }}
                                         transition={{ delay: index * 0.1 }}
                                     >
-                                        <Link href={`${category.href}?program=${selectedProgram}`}>
+                                        <Link href={`${category.href}?program=${selectedProgram}`} scroll={true}>
                                             <Card className="group h-full hover:shadow-lg transition-all duration-300 overflow-hidden">
                                                 {/* Header with gradient */}
                                                 <div className={`bg-gradient-to-r ${category.gradient} p-6 text-white`}>
@@ -212,5 +215,13 @@ export default function LessonsPage() {
                 </Container>
             </Section>
         </>
+    );
+}
+
+export default function LessonsPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Загрузка...</div>}>
+            <LessonsPageContent />
+        </Suspense>
     );
 }

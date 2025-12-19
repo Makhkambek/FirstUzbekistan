@@ -21,7 +21,7 @@ export function Header() {
             <Container>
                 <nav className="flex h-16 items-center justify-between">
                     {/* Logo */}
-                    <Link href="/" className="flex items-center gap-2">
+                    <Link href="/" scroll={true} className="flex items-center gap-2">
                         <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-ftc-red">
                             <span className="text-lg font-bold text-white">F</span>
                         </div>
@@ -36,6 +36,7 @@ export function Header() {
                             <Link
                                 key={item.href}
                                 href={item.href}
+                                scroll={true}
                                 className={cn(
                                     "flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-accent",
                                     pathname === item.href
@@ -53,7 +54,7 @@ export function Header() {
                     <div className="flex items-center gap-2">
                         <ThemeToggle />
                         <Button asChild className="hidden sm:inline-flex">
-                            <Link href="/apply">Подать заявку</Link>
+                            <Link href="/apply" scroll={true}>Подать заявку</Link>
                         </Button>
 
                         {/* Mobile menu button */}
@@ -83,6 +84,7 @@ export function Header() {
                                     <Link
                                         key={item.href}
                                         href={item.href}
+                                        scroll={true}
                                         onClick={() => setIsOpen(false)}
                                         className={cn(
                                             "block rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-accent",
@@ -97,7 +99,7 @@ export function Header() {
                                 <NavigationDropdownMobile label="Соревнования" items={COMPETITIONS} />
                                 <div className="pt-4 px-3">
                                     <Button asChild className="w-full">
-                                        <Link href="/apply" onClick={() => setIsOpen(false)}>
+                                        <Link href="/apply" scroll={true} onClick={() => setIsOpen(false)}>
                                             Подать заявку
                                         </Link>
                                     </Button>

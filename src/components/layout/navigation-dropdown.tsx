@@ -59,6 +59,7 @@ export function NavigationDropdown({ label, items }: NavigationDropdownProps) {
                 <Link
                   key={item.href}
                   href={item.href}
+                  scroll={true}
                   className={cn(
                     "block px-4 py-3 transition-colors hover:bg-accent border-b border-border last:border-0",
                     pathname === item.href && "bg-accent/50"
@@ -110,6 +111,7 @@ export function NavigationDropdownMobile({ label, items }: NavigationDropdownPro
               <Link
                 key={item.href}
                 href={item.href}
+                scroll={true}
                 className={cn(
                   "block rounded-lg px-3 py-2 text-sm transition-colors hover:bg-accent",
                   pathname === item.href

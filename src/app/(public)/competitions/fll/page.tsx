@@ -293,7 +293,7 @@ export default function FLLPage() {
                   variant="outline"
                   className="border-white text-white hover:bg-white/10"
                 >
-                  <Link href="/lessons">
+                  <Link href="/lessons?program=fll" scroll={true}>
                     Начать обучение
                   </Link>
                 </Button>
