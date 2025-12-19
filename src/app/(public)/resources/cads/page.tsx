@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
@@ -17,7 +17,7 @@ import { cn } from "@/lib/utils";
 type Resource = Database['public']['Tables']['resources']['Row'];
 type Program = 'ftc' | 'fll';
 
-export default function CadsResourcesPage() {
+function CadsResourcesPageContent() {
     const searchParams = useSearchParams();
     const program = (searchParams.get('program') as Program) || 'ftc';
 
@@ -153,5 +153,13 @@ export default function CadsResourcesPage() {
                 </Container>
             </Section>
         </>
+    );
+}
+
+export default function CadsResourcesPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Загрузка...</div>}>
+            <CadsResourcesPageContent />
+        </Suspense>
     );
 }

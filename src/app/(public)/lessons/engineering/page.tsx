@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
@@ -19,7 +19,7 @@ type Subcategory = Database['public']['Tables']['subcategories']['Row'];
 type Lesson = Database['public']['Tables']['lessons']['Row'];
 type Program = 'ftc' | 'fll';
 
-export default function EngineeringPage() {
+function EngineeringPageContent() {
     const searchParams = useSearchParams();
     const program = (searchParams.get('program') as Program) || 'ftc';
 
@@ -347,5 +347,13 @@ export default function EngineeringPage() {
                 </>
             )}
         </>
+    );
+}
+
+export default function EngineeringPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Загрузка...</div>}>
+            <EngineeringPageContent />
+        </Suspense>
     );
 }

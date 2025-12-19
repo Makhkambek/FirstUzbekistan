@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -159,7 +160,7 @@ const fllResourceCategories = [
     },
 ];
 
-export default function ResourcesPage() {
+function ResourcesPageContent() {
     const searchParams = useSearchParams();
     const program = (searchParams.get('program') as Program) || 'ftc';
 
@@ -331,5 +332,13 @@ export default function ResourcesPage() {
                 </Container>
             </Section>
         </>
+    );
+}
+
+export default function ResourcesPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Загрузка...</div>}>
+            <ResourcesPageContent />
+        </Suspense>
     );
 }
