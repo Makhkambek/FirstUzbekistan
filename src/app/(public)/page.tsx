@@ -27,34 +27,34 @@ const heroImages = [
 
 const features = [
   {
-    title: "Инженерия",
-    description: "Изучайте CAD, механику и прототипирование для создания роботов.",
-    icon: Wrench,
-  },
-  {
-    title: "Программирование",
-    description: "Осваивайте Java/Kotlin для FTC SDK, TeleOp и автономных систем.",
-    icon: Code,
-  },
-  {
-    title: "Соревнования",
-    description: "Участвуйте в международных турнирах FIRST Tech Challenge.",
-    icon: Trophy,
-  },
-  {
-    title: "Командная работа",
-    description: "Развивайте навыки сотрудничества и лидерства.",
-    icon: Users,
-  },
-  {
-    title: "Инновации",
-    description: "Создавайте уникальные решения для реальных инженерных задач.",
+    title: "Развитие FIRST в Узбекистане",
+    description: "Строим первую в стране экосистему робототехнических программ FIRST для молодежи.",
     icon: Rocket,
   },
   {
-    title: "Цель",
-    description: "Представлять Узбекистан на мировой арене робототехники.",
+    title: "Обучение инженерии и программированию",
+    description: "Преподаем CAD-моделирование, механику, Java/Kotlin и автономные системы для FTC.",
+    icon: Code,
+  },
+  {
+    title: "Поддержка команд",
+    description: "Помогаем школьникам и студентам создавать и развивать FTC команды по всей стране.",
+    icon: Users,
+  },
+  {
+    title: "Организация соревнований",
+    description: "Проводим местные турниры и квалификации для выхода на международную арену.",
+    icon: Trophy,
+  },
+  {
+    title: "Представительство на мировой арене",
+    description: "Готовим команды к участию в региональных и международных чемпионатах FIRST.",
     icon: Target,
+  },
+  {
+    title: "Создание ресурсов",
+    description: "Разрабатываем обучающие материалы, уроки и техническую документацию на русском языке.",
+    icon: Wrench,
   },
 ];
 
@@ -121,9 +121,9 @@ export default function HomePage() {
                  style={{
                    textShadow: '0 0 20px rgba(0,0,0,0.9), 0 2px 4px rgba(0,0,0,0.8)'
                  }}>
-                Мы — команда молодых инженеров и программистов, представляющих
-                Узбекистан на международных робототехнических соревнованиях
-                FIRST Tech Challenge.
+                Первая программа FIRST в Узбекистане. Развиваем робототехническое
+                образование, обучаем молодых инженеров и программистов, создаем
+                команды и представляем нашу страну на мировой арене.
               </p>
 
               <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
@@ -229,36 +229,6 @@ export default function HomePage() {
         )}
       </Section>
 
-      {/* CTA */}
-      <Section className="bg-gradient-to-br from-ftc-red to-ftc-blue text-white">
-        <div className="text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-3xl font-bold sm:text-4xl md:text-5xl">
-              Готовы начать?
-            </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-lg text-white/80">
-              Присоединяйтесь к команде FIRST Uzbekistan и станьте частью
-              глобального сообщества молодых инноваторов.
-            </p>
-            <div className="mt-10">
-              <Button
-                asChild
-                size="lg"
-                className="bg-white text-ftc-red hover:bg-white/90"
-              >
-                <Link href="/apply">
-                  Подать заявку
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
-              </Button>
-            </div>
-          </motion.div>
-        </div>
-      </Section>
     </>
   );
 }

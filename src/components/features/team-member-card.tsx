@@ -29,11 +29,11 @@ export function TeamMemberCard({ member, index = 0 }: TeamMemberCardProps) {
                         <img
                             src={member.image_url}
                             alt={member.name}
-                            className="w-full h-auto min-h-[300px] max-h-[400px] object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                            className="w-full h-[400px] object-cover object-top group-hover:scale-105 transition-transform duration-500"
                             style={{ imageRendering: 'auto' }}
                         />
                     ) : (
-                        <div className="h-[350px] w-full flex items-center justify-center bg-gradient-to-br from-ftc-red to-ftc-blue text-6xl font-bold text-white">
+                        <div className="h-[400px] w-full flex items-center justify-center bg-gradient-to-br from-ftc-red to-ftc-blue text-6xl font-bold text-white">
                             {getInitials(member.name)}
                         </div>
                     )}
@@ -42,7 +42,10 @@ export function TeamMemberCard({ member, index = 0 }: TeamMemberCardProps) {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
                     {/* Role badge */}
-                    <Badge className="absolute top-4 left-4 bg-white/95 text-foreground hover:bg-white shadow-md">
+                    <Badge
+                        variant="outline"
+                        className="absolute top-4 left-4 bg-background/95 backdrop-blur-sm shadow-md border-border"
+                    >
                         {getRoleLabel(member.role)}
                     </Badge>
 

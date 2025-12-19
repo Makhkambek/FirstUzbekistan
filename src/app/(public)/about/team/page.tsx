@@ -79,34 +79,6 @@ export default function TeamPage() {
                     </div>
                 )}
             </Section>
-
-            {/* Join CTA */}
-            <Section className="bg-gradient-to-br from-ftc-red to-ftc-blue text-white">
-                <Container size="sm">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        className="text-center"
-                    >
-                        <h2 className="text-2xl font-bold sm:text-3xl">
-                            Хотите присоединиться?
-                        </h2>
-                        <p className="mt-4 text-lg text-white/80">
-                            Мы всегда рады новым участникам, которые разделяют нашу
-                            страсть к робототехнике и инновациям.
-                        </p>
-                        <div className="mt-8">
-                            <Link
-                                href="/apply"
-                                className="inline-flex items-center justify-center rounded-lg bg-white px-8 py-3 text-base font-medium text-ftc-red transition-colors hover:bg-white/90"
-                            >
-                                Подать заявку
-                            </Link>
-                        </div>
-                    </motion.div>
-                </Container>
-            </Section>
         </>
     );
 }

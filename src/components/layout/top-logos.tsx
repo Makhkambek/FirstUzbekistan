@@ -20,7 +20,7 @@ export function TopLogos() {
             name: "The Reckless 25444",
             url: "#",
             image: "/images/wolf-logo.png",
-            height: "h-36 md:h-40",
+            height: "h-44 md:h-48",
         },
     ];
 
