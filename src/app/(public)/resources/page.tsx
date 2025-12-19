@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -167,6 +167,11 @@ function ResourcesPageContent() {
     const resourceCategories = program === 'ftc' ? ftcResourceCategories : fllResourceCategories;
     const engineeringResources = resourceCategories.filter(r => r.category === "engineering");
     const programmingResources = resourceCategories.filter(r => r.category === "programming");
+
+    // Scroll to top when component mounts or program changes
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: 'instant' });
+    }, [program]);
 
     return (
         <>

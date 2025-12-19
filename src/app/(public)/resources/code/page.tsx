@@ -26,6 +26,11 @@ function CodeResourcesPageContent() {
     const [selectedYear, setSelectedYear] = useState<number | null>(null);
     const [loading, setLoading] = useState(true);
 
+    // Scroll to top when component mounts or program changes
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: 'instant' });
+    }, [program]);
+
     useEffect(() => {
         async function fetchData() {
             const [resourcesData, yearsData] = await Promise.all([

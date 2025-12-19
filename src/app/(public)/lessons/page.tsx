@@ -47,6 +47,12 @@ function LessonsPageContent() {
     const [subcategories, setSubcategories] = useState<Record<string, Subcategory[]>>({});
     const [loading, setLoading] = useState(true);
 
+    // Scroll to top when component mounts or program changes from URL
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: 'instant' });
+        setSelectedProgram(programFromUrl);
+    }, [programFromUrl]);
+
     useEffect(() => {
         async function fetchData() {
             setLoading(true);

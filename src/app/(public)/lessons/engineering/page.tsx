@@ -27,6 +27,11 @@ function EngineeringPageContent() {
     const [lessonsBySubcategory, setLessonsBySubcategory] = useState<Record<string, Lesson[]>>({});
     const [loading, setLoading] = useState(true);
 
+    // Scroll to top when component mounts or program changes
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: 'instant' });
+    }, [program]);
+
     useEffect(() => {
         async function fetchData() {
             const subcats = await getSubcategoriesByCategory('engineering', program);
