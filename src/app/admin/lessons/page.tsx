@@ -115,7 +115,7 @@ export default function AdminLessonsPage() {
         if (error) {
             alert("Ошибка при удалении: " + error.message);
         } else {
-            fetchLessons();
+            fetchAllLessons();
         }
     }
 
