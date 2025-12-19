@@ -137,7 +137,7 @@ export default function AdminLessonsPage() {
                 // Handle case where program field doesn't exist yet (before migration)
                 const program = item.program || 'ftc';
                 return (
-                    <Badge variant={program === "ftc" ? "destructive" : "default"}>
+                    <Badge variant={program === "ftc" ? "danger" : "default"}>
                         {programLabels[program as 'ftc' | 'fll']}
                     </Badge>
                 );
