@@ -120,7 +120,7 @@ export default function AdminResourcesPage() {
             key: "program",
             label: "Программа",
             render: (item: Resource) => (
-                <Badge variant={item.program === "ftc" ? "destructive" : "default"}>
+                <Badge variant={item.program === "ftc" ? "danger" : "default"}>
                     {programLabels[item.program as 'ftc' | 'fll']}
                 </Badge>
             ),
