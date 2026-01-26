@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { NAVIGATION, COMPETITIONS } from "@/lib/constants";
+import { NAVIGATION, COMPETITIONS, RESOURCES } from "@/lib/constants";
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -48,6 +48,7 @@ export function Header() {
                             </Link>
                         ))}
                         <NavigationDropdown label="Соревнования" items={COMPETITIONS} />
+                        <NavigationDropdown label="Ресурсы" items={RESOURCES} />
                     </div>
 
                     {/* Right side */}
@@ -97,6 +98,7 @@ export function Header() {
                                     </Link>
                                 ))}
                                 <NavigationDropdownMobile label="Соревнования" items={COMPETITIONS} />
+                                <NavigationDropdownMobile label="Ресурсы" items={RESOURCES} />
                                 <div className="pt-4 px-3">
                                     <Button asChild className="w-full">
                                         <Link href="/apply" scroll={true} onClick={() => setIsOpen(false)}>

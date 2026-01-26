@@ -31,6 +31,24 @@ export const COMPETITIONS = [
     },
 ];
 
+export const RESOURCES = [
+    {
+        label: "Подготовка к соревнованиям",
+        href: "/competition-guide",
+        description: "Все что нужно знать для участия"
+    },
+    {
+        label: "CAD Ресурсы",
+        href: "/resources/cads",
+        description: "Модели и чертежи для проектирования"
+    },
+    {
+        label: "Код и примеры",
+        href: "/resources/code",
+        description: "Примеры кода и библиотеки"
+    },
+];
+
 export const SOCIAL_LINKS = {
     telegram: "https://t.me/firstuzbekistan",
     instagram: "https://instagram.com/firstuzbekistan",

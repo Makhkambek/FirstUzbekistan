@@ -12,6 +12,8 @@ export default function AuthLoginPage() {
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const [remainingAttempts, setRemainingAttempts] = useState<number | null>(null);
+    const [blockedUntil, setBlockedUntil] = useState<Date | null>(null);
 
     // Проверяем, не залогинен ли уже
     useEffect(() => {
@@ -24,6 +26,8 @@ export default function AuthLoginPage() {
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         setError("");
+        setRemainingAttempts(null);
+        setBlockedUntil(null);
         setLoading(true);
 
         try {
@@ -33,11 +37,22 @@ export default function AuthLoginPage() {
                 body: JSON.stringify({ username, password }),
             });
 
+            const data = await response.json();
+
             if (response.ok) {
                 router.push("/admin");
                 router.refresh();
+            } else if (response.status === 429) {
+                // Rate limit exceeded
+                setError(data.message || "Слишком много попыток входа");
+                if (data.blockedUntil) {
+                    setBlockedUntil(new Date(data.blockedUntil));
+                }
             } else {
-                setError("Неверный логин или пароль");
+                setError(data.error || "Неверный логин или пароль");
+                if (data.remainingAttempts !== undefined) {
+                    setRemainingAttempts(data.remainingAttempts);
+                }
             }
         } catch (err) {
             setError("Ошибка подключения");
@@ -80,9 +95,23 @@ export default function AuthLoginPage() {
                                 required
                             />
                         </div>
-                        {error && <p className="text-sm text-red-500">{error}</p>}
-                        <Button type="submit" className="w-full" disabled={loading}>
-                            {loading ? "Вход..." : "Войти"}
+                        {error && (
+                            <div className="space-y-2">
+                                <p className="text-sm text-red-500">{error}</p>
+                                {remainingAttempts !== null && remainingAttempts > 0 && (
+                                    <p className="text-xs text-muted-foreground">
+                                        Осталось попыток: {remainingAttempts}
+                                    </p>
+                                )}
+                                {blockedUntil && (
+                                    <p className="text-xs text-orange-500 font-medium">
+                                        ⚠️ Попытки входа заблокированы на 30 минут
+                                    </p>
+                                )}
+                            </div>
+                        )}
+                        <Button type="submit" className="w-full" disabled={loading || blockedUntil !== null}>
+                            {loading ? "Вход..." : blockedUntil ? "Заблокировано" : "Войти"}
                         </Button>
                     </form>
                 </CardContent>

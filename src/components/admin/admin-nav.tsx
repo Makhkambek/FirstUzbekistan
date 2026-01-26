@@ -12,7 +12,8 @@ import {
     LogOut,
     Menu,
     X,
-    FolderOpen  // ← добавьте
+    FolderOpen,
+    Shield
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -27,6 +28,7 @@ const navigation = [
     { name: "Ресурсы", href: "/admin/resources", icon: FolderOpen },
     { name: "Команда", href: "/admin/team", icon: Users },
     { name: "Спонсоры", href: "/admin/sponsors", icon: Heart },
+    { name: "Безопасность", href: "/admin/security", icon: Shield },
     { name: "Настройки", href: "/admin/settings", icon: Settings },
 ];
 
