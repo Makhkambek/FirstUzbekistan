@@ -154,10 +154,10 @@ export default async function SecurityPage() {
                                                     <Badge
                                                         variant={
                                                             attempt.status === "success"
-                                                                ? "default"
+                                                                ? "success"
                                                                 : attempt.status === "blocked"
-                                                                ? "destructive"
-                                                                : "secondary"
+                                                                ? "danger"
+                                                                : "warning"
                                                         }
                                                     >
                                                         {attempt.status === "success"
