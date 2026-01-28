@@ -9,6 +9,36 @@ export type Json =
 export interface Database {
     public: {
         Tables: {
+            admin_login_attempts: {
+                Row: {
+                    id: string
+                    username: string
+                    ip_address: string
+                    user_agent: string
+                    status: 'success' | 'failed' | 'blocked'
+                    reason: string | null
+                    attempted_at: string
+                }
+                Insert: {
+                    id?: string
+                    username: string
+                    ip_address: string
+                    user_agent: string
+                    status: 'success' | 'failed' | 'blocked'
+                    reason?: string | null
+                    attempted_at?: string
+                }
+                Update: {
+                    id?: string
+                    username?: string
+                    ip_address?: string
+                    user_agent?: string
+                    status?: 'success' | 'failed' | 'blocked'
+                    reason?: string | null
+                    attempted_at?: string
+                }
+                Relationships: []
+            }
             subcategories: {
                 Row: {
                     id: string
